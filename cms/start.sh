@@ -1,4 +1,7 @@
 #!/bin/sh
 
-# Automatically answer "yes" to Strapi's dependency installation prompt
-yes | npm run develop
+# Install required dependencies for Strapi admin
+npm install react@18.0.0 react-dom@18.0.0 react-router-dom@5.2.0 styled-components@5.2.1
+
+# Start Strapi in development mode with auto-yes for any prompts
+yes | npm run develop 
