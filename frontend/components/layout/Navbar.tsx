@@ -93,7 +93,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
           {/* Dark Mode Toggle */}
           <button
             onClick={toggleDarkMode}
-            className="p-1.5 rounded-full text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+            className="p-1 rounded-full text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
             aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
           >
             {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
@@ -102,9 +102,9 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
           {/* Get Started Button */}
           <Link 
             href="/auth/login" 
-            className="px-4 py-1.5 rounded-md bg-primary-500 text-white hover:bg-primary-600 transition-colors font-medium"
+            className="btn-primary"
           >
-            Get Started
+            Get started
           </Link>
         </div>
       </div>

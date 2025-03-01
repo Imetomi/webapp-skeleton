@@ -19,16 +19,16 @@ const Hero: React.FC = () => {
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link 
               href="/auth/login" 
-              className="px-8 py-3 rounded-lg bg-primary-500 text-white hover:bg-primary-600 transition-colors flex items-center justify-center gap-2 text-lg font-medium"
+              className="btn-primary flex items-center justify-center gap-2 text-lg"
             >
-              Get Started <ArrowRight size={18} />
+              Try it for free <ArrowRight size={18} />
             </Link>
             
             <Link 
               href="/docs" 
-              className="px-8 py-3 rounded-lg bg-white dark:bg-gray-800 text-primary-600 dark:text-primary-400 border border-primary-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-lg font-medium"
+              className="btn-secondary text-lg"
             >
-              View Documentation
+              Book a demo
             </Link>
           </div>
         </div>

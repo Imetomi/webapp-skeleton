@@ -113,7 +113,7 @@ const Dashboard: React.FC = () => {
               <div className="space-y-4">
                 {[1, 2, 3, 4, 5].map((item) => (
                   <div key={item} className="flex items-start">
-                    <div className="w-2 h-2 mt-2 rounded-full bg-primary-500 mr-3"></div>
+                    <div className="w-2 h-2 mt-2 rounded-full bg-accent-500 mr-3"></div>
                     <div>
                       <p className="text-sm text-gray-900 dark:text-white">
                         User logged in from a new device
