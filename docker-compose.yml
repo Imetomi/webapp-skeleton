@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../infrastructure/docker/frontend.Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - NEXT_TELEMETRY_DISABLED=1
+    command: sh -c "npm install && npm run dev"
+    depends_on:
+      - backend
+    networks:
+      - webapp-network
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../infrastructure/docker/backend.Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - POSTGRES_SERVER=db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=webapp_skeleton
+    depends_on:
+      - db
+    networks:
+      - webapp-network
+    restart: unless-stopped
+
+  cms:
+    build:
+      context: ./cms
+      dockerfile: ../infrastructure/docker/cms.Dockerfile
+    ports:
+      - "1337:1337"
+    volumes:
+      - ./cms:/app
+      - /app/node_modules
+    environment:
+      - DATABASE_CLIENT=postgres
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=strapi
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=postgres
+      - NODE_ENV=development
+      - ADMIN_JWT_SECRET=admin-jwt-secret-key-change-me
+      - STRAPI_JWT_SECRET=jwt-secret-key-change-me
+      - STRAPI_APP_KEYS=app-key-1,app-key-2,app-key-3,app-key-4
+      - API_TOKEN_SALT=api-token-salt-change-me
+      - TRANSFER_TOKEN_SALT=transfer-token-salt-change-me
+    command: sh -c "npm install && chmod +x ./start.sh && ./start.sh"
+    depends_on:
+      - db
+    networks:
+      - webapp-network
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./infrastructure/docker/init-multiple-dbs.sh:/docker-entrypoint-initdb.d/init-multiple-dbs.sh
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_MULTIPLE_DATABASES=webapp_skeleton,strapi
+    networks:
+      - webapp-network
+
+networks:
+  webapp-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
