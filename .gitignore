@@ -62,3 +62,8 @@ logs/
 # Build
 dist/
 build/
+
+# Strapi
+cms/public/uploads/
+cms/.tmp/
+cms/.cache/
