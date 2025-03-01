@@ -1,9 +1,18 @@
-FROM python:3.12-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install dependencies directly
-RUN pip install fastapi==0.110.0 uvicorn==0.29.0 sqlalchemy==2.0.29 alembic==1.13.1 pydantic==2.6.4 python-jose[cryptography]==3.3.0 passlib[bcrypt]==1.7.4 python-multipart==0.0.9 python-dotenv==1.0.1 httpx==0.27.0 firebase-admin==6.4.0 stripe==8.5.0
+# Install Poetry
+RUN pip install poetry==1.7.1
+
+# Configure Poetry to not create a virtual environment
+RUN poetry config virtualenvs.create false
+
+# Copy pyproject.toml only
+COPY pyproject.toml ./
+
+# Generate lock file and install only main dependencies
+RUN poetry lock --no-update && poetry install --only main
 
 # Copy the application
 COPY . .

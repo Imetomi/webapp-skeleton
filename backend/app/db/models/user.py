@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from sqlalchemy import Boolean, Column, DateTime, Integer, String
@@ -17,8 +17,12 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     is_superuser = Column(Boolean, default=False)
     firebase_uid = Column(String, unique=True, nullable=True)  # For Firebase auth
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(
+        DateTime,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+    )
 
-    # Relationships can be added here
-    # e.g., subscriptions = relationship("Subscription", back_populates="user")
+    # Relationships
+    subscriptions = relationship("Subscription", back_populates="user")

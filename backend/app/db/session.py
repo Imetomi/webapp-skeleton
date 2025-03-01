@@ -6,7 +6,7 @@ from app.core.config import settings
 
 # Create SQLAlchemy engine
 engine = create_engine(
-    settings.SQLALCHEMY_DATABASE_URI or "sqlite:///./webapp_skeleton.db"
+    str(settings.SQLALCHEMY_DATABASE_URI) or "sqlite:///./webapp_skeleton.db"
 )
 
 # Create SessionLocal class
@@ -14,6 +14,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Create Base class
 Base = declarative_base()
+
 
 # Dependency to get DB session
 def get_db():
