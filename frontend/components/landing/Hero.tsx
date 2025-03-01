@@ -19,9 +19,9 @@ const Hero: React.FC = () => {
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link 
               href="/auth/login" 
-              className="px-8 py-3 rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors flex items-center justify-center gap-2 text-lg font-medium"
+              className="px-8 py-3 rounded-lg bg-primary-500 text-white hover:bg-primary-600 transition-colors flex items-center justify-center gap-2 text-lg font-medium"
             >
-              Get Started <ArrowRight size={20} />
+              Get Started <ArrowRight size={18} />
             </Link>
             
             <Link 

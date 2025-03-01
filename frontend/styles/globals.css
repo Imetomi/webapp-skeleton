@@ -43,14 +43,21 @@
   @apply outline-none ring-2 ring-primary-500 ring-offset-2 dark:ring-offset-gray-900;
 }
 
-/* Smooth transitions for dark mode */
-* {
-  @apply transition-colors duration-200 ease-in-out;
+/* Transitions for dark mode - single rule to prevent conflicts */
+*, *::before, *::after {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Explicitly disable transitions on layout properties */
+.no-layout-shifts {
+  transition-property: none;
 }
 
 @layer components {
   .btn-primary {
-    @apply px-4 py-2 bg-primary-600 text-white font-medium rounded-md hover:bg-primary-700 transition-colors;
+    @apply px-4 py-2 bg-primary-500 text-white font-medium rounded-md hover:bg-primary-600 transition-colors;
   }
   
   .btn-secondary {
