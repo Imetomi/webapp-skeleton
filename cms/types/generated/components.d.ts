@@ -1,33 +1,5 @@
 import type { Schema, Attribute } from '@strapi/strapi';
 
-export interface SectionsContentSection extends Schema.Component {
-  collectionName: 'components_sections_content_sections';
-  info: {
-    displayName: 'Content Section';
-    description: 'Structured content sections for articles';
-  };
-  attributes: {
-    title: Attribute.String;
-    content: Attribute.RichText & Attribute.Required;
-    media: Attribute.Media;
-    layout: Attribute.Enumeration<
-      [
-        'standard',
-        'wide',
-        'full-width',
-        'two-column',
-        'media-left',
-        'media-right',
-        'media-center'
-      ]
-    > &
-      Attribute.DefaultTo<'standard'>;
-    backgroundColor: Attribute.String;
-    anchor: Attribute.String;
-    callToAction: Attribute.Component<'shared.call-to-action'>;
-  };
-}
-
 export interface SharedCallToAction extends Schema.Component {
   collectionName: 'components_shared_call_to_actions';
   info: {
@@ -150,7 +122,6 @@ export interface SharedSocialLink extends Schema.Component {
 declare module '@strapi/types' {
   export module Shared {
     export interface Components {
-      'sections.content-section': SectionsContentSection;
       'shared.call-to-action': SharedCallToAction;
       'shared.reference': SharedReference;
       'shared.seo': SharedSeo;

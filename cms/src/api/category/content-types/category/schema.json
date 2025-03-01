@@ -44,7 +44,9 @@
     "icon": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"],
+      "allowedTypes": [
+        "images"
+      ],
       "required": true
     },
     "seoDescription": {
@@ -52,4 +54,4 @@
       "maxLength": 160
     }
   }
-} 
+}

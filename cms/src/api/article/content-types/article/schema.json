@@ -33,8 +33,10 @@
     "featuredImage": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"],
-      "required": true
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
     },
     "author": {
       "type": "relation",
@@ -75,32 +77,27 @@
       "relation": "manyToMany",
       "target": "api::article.article"
     },
-    "sections": {
-      "type": "component",
-      "repeatable": true,
-      "component": "sections.content-section"
-    },
-    "tableOfContents": {
-      "type": "boolean",
-      "default": true
-    },
     "featured": {
       "type": "boolean",
       "default": false
     },
-    "allowComments": {
-      "type": "boolean",
-      "default": true
-    },
     "gallery": {
       "type": "media",
       "multiple": true,
-      "allowedTypes": ["images"]
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
     },
     "references": {
       "type": "component",
       "repeatable": true,
       "component": "shared.reference"
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.call-to-action"
     }
   }
-} 
+}

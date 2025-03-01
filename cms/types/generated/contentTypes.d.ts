@@ -844,12 +844,10 @@ export interface ApiArticleArticle extends Schema.CollectionType {
       'manyToMany',
       'api::article.article'
     >;
-    sections: Attribute.Component<'sections.content-section', true>;
-    tableOfContents: Attribute.Boolean & Attribute.DefaultTo<true>;
     featured: Attribute.Boolean & Attribute.DefaultTo<false>;
-    allowComments: Attribute.Boolean & Attribute.DefaultTo<true>;
     gallery: Attribute.Media;
     references: Attribute.Component<'shared.reference', true>;
+    cta: Attribute.Component<'shared.call-to-action', true>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

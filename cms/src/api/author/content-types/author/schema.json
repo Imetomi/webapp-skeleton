@@ -32,7 +32,9 @@
     "profilePicture": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"],
+      "allowedTypes": [
+        "images"
+      ],
       "required": true
     },
     "socialLinks": {
@@ -51,4 +53,4 @@
       "maxLength": 500
     }
   }
-} 
+}
