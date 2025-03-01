@@ -14,6 +14,8 @@ from app.db.models.user import User
 from app.schemas.subscription import (
     Subscription as SubscriptionSchema,
     SubscriptionPlan as SubscriptionPlanSchema,
+    SubscriptionCreate,
+    SubscriptionPlanCreate,
     SubscriptionRequest,
 )
 
@@ -41,7 +43,7 @@ def get_subscription_plans(
 
 @router.post("/plans", response_model=SubscriptionPlanSchema)
 def create_subscription_plan(
-    plan_in: SubscriptionPlanSchema,
+    plan_in: SubscriptionPlanCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_active_superuser),
 ) -> Any:
