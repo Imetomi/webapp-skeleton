@@ -57,7 +57,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
             <NavigationMenu.List className="flex space-x-6">
               <NavigationMenu.Item>
                 <NavigationMenu.Link
-                  className={`text-gray-700 font-medium hover:text-primary-600 dark:text-gray-200 dark:hover:text-accent-400 ${
+                  className={`text-base text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-accent-400 ${
                     router.pathname === '/pricing' ? 'text-primary-600 dark:text-accent-400' : ''
                   }`}
                   href="/pricing"
@@ -68,7 +68,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
               
               <NavigationMenu.Item>
                 <NavigationMenu.Link
-                  className={`text-gray-700 font-medium hover:text-primary-600 dark:text-gray-200 dark:hover:text-accent-400 ${
+                  className={`text-base text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-accent-400 ${
                     router.pathname === '/blog' ? 'text-primary-600 dark:text-accent-400' : ''
                   }`}
                   href="/blog"
@@ -79,7 +79,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
               
               <NavigationMenu.Item>
                 <NavigationMenu.Link
-                  className={`text-gray-700 font-medium hover:text-primary-600 dark:text-gray-200 dark:hover:text-accent-400 ${
+                  className={`text-base text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-accent-400 ${
                     router.pathname === '/about' ? 'text-primary-600 dark:text-accent-400' : ''
                   }`}
                   href="/about"
@@ -101,7 +101,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
           
           {/* Get Started Button */}
           <Link 
-            href="/auth/login" 
+            href="/auth/signin" 
             className="btn-primary dark:bg-primary-600 dark:hover:bg-primary-700 dark:border-primary-800"
           >
             Get started
