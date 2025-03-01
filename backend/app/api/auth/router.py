@@ -12,6 +12,7 @@ from app.db.models.user import User
 from app.schemas.token import Token
 from app.schemas.user import User as UserSchema
 from app.schemas.user import UserCreate, UserLogin, GoogleLogin
+from app.core.firebase_admin import verify_firebase_token, initialize_firebase_admin
 
 router = APIRouter()
 
@@ -106,20 +107,64 @@ def google_login(google_in: GoogleLogin, db: Session = Depends(get_db)) -> Any:
     """
     Login with Google ID token.
     """
-    # TODO: Implement Firebase authentication
-    # This is a placeholder for Firebase authentication
-    # In a real implementation, you would verify the ID token with Firebase
-    # and create or update the user in your database
+    try:
+        # Initialize Firebase Admin SDK
+        initialize_firebase_admin()
 
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Google login not implemented yet",
-    )
+        # Verify the ID token
+        user_info = verify_firebase_token(google_in.id_token)
+
+        # Check if user exists in our database
+        user = db.query(User).filter(User.firebase_uid == user_info["uid"]).first()
+
+        # If user doesn't exist, create them
+        if not user:
+            user = User(
+                email=user_info["email"],
+                full_name=user_info.get("name"),
+                firebase_uid=user_info["uid"],
+                is_active=True,
+                is_superuser=False,
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+
+        # Create access token
+        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        return {
+            "access_token": create_access_token(
+                subject=user.id, expires_delta=access_token_expires
+            ),
+            "token_type": "bearer",
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Invalid authentication credentials: {str(e)}",
+        )
 
 
 @router.get("/me", response_model=UserSchema)
-def read_users_me(current_user: User = Depends(get_current_user)) -> Any:
+async def get_me(
+    current_user: dict = Depends(get_current_user), db: Session = Depends(get_db)
+):
     """
-    Get current user.
+    Get current user information
     """
-    return current_user
+    # Check if user exists in our database
+    user = db.query(User).filter(User.firebase_uid == current_user["uid"]).first()
+
+    # If user doesn't exist, create them
+    if not user:
+        user = User(
+            email=current_user["email"],
+            full_name=current_user["name"],
+            firebase_uid=current_user["uid"],
+            is_active=True,
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+    return user

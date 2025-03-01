@@ -1,0 +1,90 @@
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { 
+  signInWithPopup, 
+  GoogleAuthProvider, 
+  signInWithEmailAndPassword,
+  signOut as firebaseSignOut,
+  onAuthStateChanged,
+  User as FirebaseUser
+} from 'firebase/auth';
+import { auth } from '../utils/firebase';
+import { AuthContextType, AuthUser } from '../types/auth';
+
+const AuthContext = createContext<AuthContextType | null>(null);
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+
+const mapFirebaseUser = (user: FirebaseUser): AuthUser => ({
+  uid: user.uid,
+  email: user.email,
+  displayName: user.displayName,
+  photoURL: user.photoURL,
+});
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setLoading(true);
+      if (firebaseUser) {
+        setUser(mapFirebaseUser(firebaseUser));
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const signInWithGoogle = async () => {
+    try {
+      setError(null);
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('An error occurred during Google sign-in'));
+      throw err;
+    }
+  };
+
+  const signInWithEmailPassword = async (email: string, password: string) => {
+    try {
+      setError(null);
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('An error occurred during email/password sign-in'));
+      throw err;
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      setError(null);
+      await firebaseSignOut(auth);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('An error occurred during sign-out'));
+      throw err;
+    }
+  };
+
+  const value = {
+    user,
+    loading,
+    error,
+    signInWithGoogle,
+    signInWithEmailPassword,
+    signOut,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}; 

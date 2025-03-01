@@ -1,17 +1,18 @@
 import os
 from typing import Any, Dict, List, Optional, Union
+from pathlib import Path
 
 from pydantic import AnyHttpUrl, PostgresDsn, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "Webapp Skeleton"
-    API_V1_STR: str = "/api"
+    PROJECT_NAME: str = "Webapp Skeleton API"
+    API_V1_STR: str = "/api/v1"
 
     # BACKEND_CORS_ORIGINS is a comma-separated list of origins
     # e.g: "http://localhost:3000,http://localhost:8000,http://localhost:1337"
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["http://localhost:3000"]
+    BACKEND_CORS_ORIGINS: List[str] = ["http://localhost:3000"]
 
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
@@ -50,7 +51,9 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
     # Firebase
-    FIREBASE_CREDENTIALS: Optional[str] = os.getenv("FIREBASE_CREDENTIALS")
+    FIREBASE_SERVICE_ACCOUNT_PATH: str = os.path.join(
+        Path(__file__).resolve().parent.parent.parent, "firebase-service-account.json"
+    )
 
     # Stripe
     STRIPE_API_KEY: Optional[str] = os.getenv("STRIPE_API_KEY")

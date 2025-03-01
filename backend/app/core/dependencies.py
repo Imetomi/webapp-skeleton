@@ -1,7 +1,11 @@
 from typing import Generator, Optional
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import (
+    OAuth2PasswordBearer,
+    HTTPBearer,
+    HTTPAuthorizationCredentials,
+)
 from jose import jwt
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
@@ -11,8 +15,11 @@ from app.core.security import verify_token
 from app.db.session import SessionLocal
 from app.db.models.user import User
 from app.schemas.token import TokenPayload
+from app.core.firebase_admin import verify_firebase_token
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login")
+
+security = HTTPBearer()
 
 
 def get_db() -> Generator:
@@ -27,29 +34,27 @@ def get_db() -> Generator:
 
 
 def get_current_user(
-    db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)
-) -> User:
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+) -> dict:
     """
-    Dependency for getting the current authenticated user.
+    Dependency to get the current user from Firebase token
     """
-    token_data = verify_token(token)
-    if not token_data:
+    try:
+        token = credentials.credentials
+        user_info = verify_firebase_token(token)
+        return user_info
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=str(e),
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-
-    user = db.query(User).filter(User.id == int(token_data.sub)).first()
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
-        )
-    if not user.is_active:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user"
-        )
-    return user
 
 
 def get_current_active_superuser(
