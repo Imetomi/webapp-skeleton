@@ -46,7 +46,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
     >
       <div className="container mx-auto px-4 h-full flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="text-xl font-bold text-primary-600 dark:text-primary-400">
+        <Link href="/" className="text-xl font-bold text-primary-600 dark:text-accent-400">
           WebApp
         </Link>
         
@@ -57,8 +57,8 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
             <NavigationMenu.List className="flex space-x-6">
               <NavigationMenu.Item>
                 <NavigationMenu.Link
-                  className={`text-gray-700 font-medium hover:text-primary-600 dark:text-gray-200 dark:hover:text-primary-400 ${
-                    router.pathname === '/pricing' ? 'text-primary-600 dark:text-primary-400' : ''
+                  className={`text-gray-700 font-medium hover:text-primary-600 dark:text-gray-200 dark:hover:text-accent-400 ${
+                    router.pathname === '/pricing' ? 'text-primary-600 dark:text-accent-400' : ''
                   }`}
                   href="/pricing"
                 >
@@ -68,8 +68,8 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
               
               <NavigationMenu.Item>
                 <NavigationMenu.Link
-                  className={`text-gray-700 font-medium hover:text-primary-600 dark:text-gray-200 dark:hover:text-primary-400 ${
-                    router.pathname === '/blog' ? 'text-primary-600 dark:text-primary-400' : ''
+                  className={`text-gray-700 font-medium hover:text-primary-600 dark:text-gray-200 dark:hover:text-accent-400 ${
+                    router.pathname === '/blog' ? 'text-primary-600 dark:text-accent-400' : ''
                   }`}
                   href="/blog"
                 >
@@ -79,8 +79,8 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
               
               <NavigationMenu.Item>
                 <NavigationMenu.Link
-                  className={`text-gray-700 font-medium hover:text-primary-600 dark:text-gray-200 dark:hover:text-primary-400 ${
-                    router.pathname === '/about' ? 'text-primary-600 dark:text-primary-400' : ''
+                  className={`text-gray-700 font-medium hover:text-primary-600 dark:text-gray-200 dark:hover:text-accent-400 ${
+                    router.pathname === '/about' ? 'text-primary-600 dark:text-accent-400' : ''
                   }`}
                   href="/about"
                 >
@@ -93,7 +93,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
           {/* Dark Mode Toggle */}
           <button
             onClick={toggleDarkMode}
-            className="p-1 rounded-full text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+            className="p-1 rounded-full text-gray-600 hover:bg-gray-100 dark:text-accent-300 dark:hover:bg-gray-800"
             aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
           >
             {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
@@ -102,7 +102,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
           {/* Get Started Button */}
           <Link 
             href="/auth/login" 
-            className="btn-primary"
+            className="btn-primary dark:bg-primary-600 dark:hover:bg-primary-700 dark:border-primary-800"
           >
             Get started
           </Link>

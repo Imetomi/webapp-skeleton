@@ -9,22 +9,22 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="col-span-1 md:col-span-1">
-            <Link href="/" className="text-xl font-bold text-primary-600 dark:text-primary-400">
+            <Link href="/" className="text-xl font-bold text-primary-600 dark:text-accent-400">
               WebApp
             </Link>
             <p className="mt-4 text-gray-600 dark:text-gray-400">
               Secure, scalable authentication for modern web applications.
             </p>
             <div className="mt-6 flex space-x-4">
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-accent-300">
                 <Github size={20} />
                 <span className="sr-only">GitHub</span>
               </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-accent-300">
                 <Twitter size={20} />
                 <span className="sr-only">Twitter</span>
               </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-accent-300">
                 <Linkedin size={20} />
                 <span className="sr-only">LinkedIn</span>
               </a>
@@ -38,22 +38,22 @@ const Footer: React.FC = () => {
             </h3>
             <ul className="mt-4 space-y-2">
               <li>
-                <Link href="/features" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">
+                <Link href="/features" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-accent-400">
                   Features
                 </Link>
               </li>
               <li>
-                <Link href="/pricing" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">
+                <Link href="/pricing" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-accent-400">
                   Pricing
                 </Link>
               </li>
               <li>
-                <Link href="/docs" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">
+                <Link href="/docs" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-accent-400">
                   Documentation
                 </Link>
               </li>
               <li>
-                <Link href="/changelog" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">
+                <Link href="/changelog" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-accent-400">
                   Changelog
                 </Link>
               </li>
@@ -67,22 +67,22 @@ const Footer: React.FC = () => {
             </h3>
             <ul className="mt-4 space-y-2">
               <li>
-                <Link href="/about" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">
+                <Link href="/about" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-accent-400">
                   About
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">
+                <Link href="/blog" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-accent-400">
                   Blog
                 </Link>
               </li>
               <li>
-                <Link href="/careers" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">
+                <Link href="/careers" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-accent-400">
                   Careers
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">
+                <Link href="/contact" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-accent-400">
                   Contact
                 </Link>
               </li>
@@ -96,17 +96,17 @@ const Footer: React.FC = () => {
             </h3>
             <ul className="mt-4 space-y-2">
               <li>
-                <Link href="/privacy" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">
+                <Link href="/privacy" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-accent-400">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">
+                <Link href="/terms" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-accent-400">
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <Link href="/cookies" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">
+                <Link href="/cookies" className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-accent-400">
                   Cookie Policy
                 </Link>
               </li>
