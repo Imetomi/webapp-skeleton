@@ -2,9 +2,14 @@ import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import * as Tabs from '@radix-ui/react-tabs';
 import { BarChart, Users, Settings, Bell, FileText } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Dashboard: React.FC = () => {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
+
+  const handleSignOut = () => {
+    signOut();
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -16,6 +21,13 @@ const Dashboard: React.FC = () => {
         <p className="text-gray-600 dark:text-gray-300 mt-2">
           Here's what's happening with your account today.
         </p>
+      </div>
+
+      {/* Signout Button */}
+      <div className="flex justify-end mb-4">
+        <Button variant="text" className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300" onClick={handleSignOut}>
+          Sign Out
+        </Button>
       </div>
 
       {/* Dashboard Tabs */}
