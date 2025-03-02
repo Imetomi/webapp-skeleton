@@ -27,9 +27,10 @@ const BookDemoPage: React.FC = () => {
       </Head>
 
       <Layout>
-        <div className="container mx-auto px-4 py-24">
+        {/* Header section */}
+        <div className="container mx-auto px-4 py-12">
           <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
+            <div className="text-center mb-1">
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
                 Book a Demo
               </h1>
@@ -37,15 +38,15 @@ const BookDemoPage: React.FC = () => {
                 Schedule a personalized demo with our team to see how our authentication solution can work for your business.
               </p>
             </div>
-
-            {/* Calendly inline widget */}
-            <div 
-              className="calendly-inline-widget bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden" 
-              data-url="https://calendly.com/your-calendly-link"
-              style={{ minWidth: '320px', height: '700px' }}
-            ></div>
           </div>
         </div>
+
+        {/* Calendly widget section - full width, no constraints */}
+        <div 
+          className="calendly-inline-widget w-full bg-white"
+          data-url="https://calendly.com/imetstamas-rfog/30min"
+          style={{ height: '1000px' }}
+        ></div>
       </Layout>
     </>
   );

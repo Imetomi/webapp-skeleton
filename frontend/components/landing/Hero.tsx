@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 
 const Hero: React.FC = () => {
+  const router = useRouter();
+
+  // Prefetch the routes immediately
+  useEffect(() => {
+    router.prefetch('/auth/signin');
+    router.prefetch('/book-demo');
+  }, [router]);
+
   return (
     <section className="py-24 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4">
@@ -29,7 +38,16 @@ const Hero: React.FC = () => {
               size="lg"
               className="inline-flex items-center"
             >
-              <Link href="/auth/signin" className="inline-flex items-center gap-2">
+              <Link 
+                href="/auth/signin" 
+                prefetch
+                scroll={false}
+                className="inline-flex items-center gap-2 w-full justify-center"
+                onClick={(e) => {
+                  e.preventDefault();
+                  router.push('/auth/signin');
+                }}
+              >
                 Try it for free <ArrowRight size={16} />
               </Link>
             </Button>
@@ -39,7 +57,16 @@ const Hero: React.FC = () => {
               variant="secondary"
               size="lg"
             >
-              <Link href="/book-demo">
+              <Link 
+                href="/book-demo" 
+                prefetch
+                scroll={false}
+                className="w-full justify-center"
+                onClick={(e) => {
+                  e.preventDefault();
+                  router.push('/book-demo');
+                }}
+              >
                 Book a demo
               </Link>
             </Button>

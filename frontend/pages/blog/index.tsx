@@ -67,7 +67,7 @@ export default function BlogPage({ articles }: BlogPageProps) {
             {articles.data.map((article) => {
               return (
                 <article key={article.id} className="group">
-                  <Link href={`/blog/${article.attributes.slug}`}>
+                  <Link href={`/blog/${article.attributes.slug}`} prefetch scroll={false}>
                     <div className="space-y-4">
                       {/* Article Meta */}
                       <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
