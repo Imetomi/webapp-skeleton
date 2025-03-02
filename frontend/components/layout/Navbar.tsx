@@ -57,8 +57,16 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
           <NavigationMenu.Root className="relative">
             <NavigationMenu.List className="flex space-x-6">
               <NavigationMenu.Item>
+                <Link href="/features" className={`text-base text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white ${
+                  router.pathname === '/features' ? 'text-gray-900 dark:text-white' : ''
+                }`}>
+                  Features
+                </Link>
+              </NavigationMenu.Item>
+
+              <NavigationMenu.Item>
                 <Link href="/pricing" className={`text-base text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white ${
-                  router.pathname === '/pricing' ? 'text-gray-900 font-semibold dark:text-white' : ''
+                  router.pathname === '/pricing' ? 'text-gray-900 dark:text-white' : ''
                 }`}>
                   Pricing
                 </Link>
@@ -66,7 +74,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
               
               <NavigationMenu.Item>
                 <Link href="/blog" className={`text-base text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white ${
-                  router.pathname === '/blog' ? 'text-gray-900 font-semibold dark:text-white' : ''
+                  router.pathname === '/blog' ? 'text-gray-900 dark:text-white' : ''
                 }`}>
                   Blog
                 </Link>
@@ -74,13 +82,16 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
               
               <NavigationMenu.Item>
                 <Link href="/about" className={`text-base text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white ${
-                  router.pathname === '/about' ? 'text-gray-900 font-semibold dark:text-white' : ''
+                  router.pathname === '/about' ? 'text-gray-900 dark:text-white' : ''
                 }`}>
                   About
                 </Link>
               </NavigationMenu.Item>
             </NavigationMenu.List>
           </NavigationMenu.Root>
+          
+          {/* Vertical Divider */}
+          <div className="h-6 w-px bg-gray-600 dark:bg-gray-300" />
           
           {/* Dark Mode Toggle */}
           <button
