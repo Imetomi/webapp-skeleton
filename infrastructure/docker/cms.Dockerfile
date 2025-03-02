@@ -9,6 +9,9 @@ RUN npm install -g @strapi/strapi@latest
 COPY package.json ./
 RUN npm install
 
+# Install Strapi SEO plugin
+RUN npm install @strapi/plugin-seo
+
 # Create uploads directory
 RUN mkdir -p ./public/uploads
 

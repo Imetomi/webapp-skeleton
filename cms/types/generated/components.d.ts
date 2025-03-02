@@ -16,6 +16,29 @@ export interface SharedCallToAction extends Schema.Component {
   };
 }
 
+export interface SharedMetaSocial extends Schema.Component {
+  collectionName: 'components_shared_meta_socials';
+  info: {
+    displayName: 'Meta Social';
+    description: 'Social media metadata for sharing';
+  };
+  attributes: {
+    socialNetwork: Attribute.Enumeration<['Facebook', 'Twitter']> &
+      Attribute.Required;
+    title: Attribute.String &
+      Attribute.Required &
+      Attribute.SetMinMaxLength<{
+        maxLength: 60;
+      }>;
+    description: Attribute.Text &
+      Attribute.Required &
+      Attribute.SetMinMaxLength<{
+        maxLength: 160;
+      }>;
+    image: Attribute.Media & Attribute.Required;
+  };
+}
+
 export interface SharedReference extends Schema.Component {
   collectionName: 'components_shared_references';
   info: {
@@ -63,31 +86,11 @@ export interface SharedSeo extends Schema.Component {
       Attribute.SetMinMaxLength<{
         maxLength: 160;
       }>;
-    metaKeywords: Attribute.Text;
+    keywords: Attribute.Text;
     metaRobots: Attribute.String & Attribute.DefaultTo<'index, follow'>;
     canonicalURL: Attribute.String;
-    ogTitle: Attribute.String &
-      Attribute.SetMinMaxLength<{
-        maxLength: 60;
-      }>;
-    ogDescription: Attribute.Text &
-      Attribute.SetMinMaxLength<{
-        maxLength: 160;
-      }>;
-    ogImage: Attribute.Media;
-    twitterTitle: Attribute.String &
-      Attribute.SetMinMaxLength<{
-        maxLength: 60;
-      }>;
-    twitterDescription: Attribute.Text &
-      Attribute.SetMinMaxLength<{
-        maxLength: 160;
-      }>;
-    twitterImage: Attribute.Media;
-    twitterCardType: Attribute.Enumeration<
-      ['summary', 'summary_large_image', 'app', 'player']
-    > &
-      Attribute.DefaultTo<'summary_large_image'>;
+    preventIndexing: Attribute.Boolean & Attribute.DefaultTo<false>;
+    metaSocial: Attribute.Component<'shared.meta-social', true>;
     structuredData: Attribute.JSON;
   };
 }
@@ -123,6 +126,7 @@ declare module '@strapi/types' {
   export module Shared {
     export interface Components {
       'shared.call-to-action': SharedCallToAction;
+      'shared.meta-social': SharedMetaSocial;
       'shared.reference': SharedReference;
       'shared.seo': SharedSeo;
       'shared.social-link': SharedSocialLink;

@@ -124,7 +124,7 @@ Web automation tools have become essential for modern web development workflows,
 
 ## What is Selenium?
 
-Selenium is a well-established, open-source framework for automating web browsers. It supports multiple programming languages (Java, Python, C#, JavaScript, etc.) and works with various browsers (Chrome, Firefox, Safari, Edge).
+Selenium is a well-established, open-source framework for automating web browsers. It supports multiple programming languages (Java, Python, C#, JavaScript, etc.) and works with various browsers (Chrome, Firefox, Safari, Edge). Selenium has been the go-to web automation tool for many years, offering robust cross-browser testing capabilities.
 
 ### Key Features of Selenium
 
@@ -136,7 +136,7 @@ Selenium is a well-established, open-source framework for automating web browser
 
 ## What is Puppeteer?
 
-Puppeteer is a more recent Node.js library developed by Google that provides a high-level API to control Chrome or Chromium browsers programmatically.
+Puppeteer is a more recent Node.js library developed by Google that provides a high-level API to control Chrome or Chromium browsers programmatically. Puppeteer has gained popularity for its performance and deep integration with Chrome's DevTools Protocol, making it excellent for web automation tasks specific to Chrome.
 
 ### Key Features of Puppeteer
 
@@ -248,19 +248,38 @@ Both Selenium and Puppeteer are powerful tools for web automation, but they serv
 
 The best choice depends on your specific requirements, team expertise, and project constraints. Many teams even use both tools for different purposes, leveraging the strengths of each where appropriate.
 
-Whatever you choose, both tools will continue to evolve and improve, providing developers with powerful options for automating browser interactions.
+For cross-browser testing needs, Selenium remains the industry standard with its robust WebDriver protocol. For Chrome-specific automation tasks where performance is critical, Puppeteer offers significant advantages with its modern JavaScript API and direct access to Chrome's internals.
+
+Whatever you choose, both Selenium and Puppeteer will continue to evolve and improve, providing developers with powerful options for automating browser interactions.
         """,
         "seo": {
             "metaTitle": "Selenium vs Puppeteer: Comprehensive Comparison Guide",
             "metaDescription": "Compare Selenium and Puppeteer for web automation and testing. Learn the pros and cons of each tool and which one is best for your specific use case.",
-            "metaKeywords": "selenium, puppeteer, web automation, browser testing, web scraping, javascript, python, comparison",
+            "keywords": "selenium, puppeteer, web automation, browser testing, web scraping, javascript, python, comparison",
             "metaRobots": "index, follow",
             "canonicalURL": "https://example.com/blog/selenium-vs-puppeteer",
-            "ogTitle": "Selenium vs Puppeteer: Web Automation Tools Compared",
-            "ogDescription": "A detailed comparison of Selenium and Puppeteer for web automation, testing, and scraping to help you make the right choice for your project.",
-            "twitterTitle": "Selenium vs Puppeteer: Web Automation Tools Compared",
-            "twitterDescription": "Compare features, performance, and use cases of Selenium and Puppeteer to choose the right web automation tool for your needs.",
-            "twitterCardType": "summary_large_image",
+            "preventIndexing": False,
+            "metaSocial": [],  # Will be updated after image upload
+            "structuredData": {
+                "@context": "https://schema.org",
+                "@type": "TechArticle",
+                "headline": "Selenium vs Puppeteer: Choosing the Right Web Automation Tool",
+                "description": "A comprehensive comparison of Selenium and Puppeteer for web automation, testing, and scraping, helping you choose the right tool for your specific needs.",
+                "keywords": "selenium, puppeteer, web automation, browser testing, web scraping, javascript, python, comparison",
+                "author": {"@type": "Person", "name": "Emma Wilson"},
+                "publisher": {
+                    "@type": "Organization",
+                    "name": "Example Tech Blog",
+                    "logo": {
+                        "@type": "ImageObject",
+                        "url": "https://example.com/logo.png",
+                    },
+                },
+                "mainEntityOfPage": {
+                    "@type": "WebPage",
+                    "@id": "https://example.com/blog/selenium-vs-puppeteer",
+                },
+            },
         },
         "ctas": [
             {
@@ -310,17 +329,17 @@ In the rapidly evolving landscape of educational technology, Quino stands out as
 
 ## What is Quino?
 
-Quino is an AI-powered learning platform designed to adapt to each learner's unique needs, preferences, and pace. Unlike traditional one-size-fits-all educational approaches, Quino creates dynamic learning paths that evolve based on a student's performance, engagement patterns, and learning style.
+Quino is an AI-powered learning platform designed to adapt to each learner's unique needs, preferences, and pace. Unlike traditional one-size-fits-all educational approaches, Quino creates dynamic learning paths that evolve based on a student's performance, engagement patterns, and learning style. The Quino learning platform represents a significant advancement in how educational content is delivered and consumed.
 
 ## Key Features
 
 ### Adaptive Learning Paths
 
-Quino's core technology continuously analyzes student performance and adjusts content difficulty, pacing, and presentation to optimize learning outcomes. The platform identifies knowledge gaps and strengths in real-time, then tailors subsequent lessons accordingly.
+Quino's core technology continuously analyzes student performance and adjusts content difficulty, pacing, and presentation to optimize learning outcomes. The platform identifies knowledge gaps and strengths in real-time, then tailors subsequent lessons accordingly. This adaptive learning approach is central to the Quino learning experience.
 
 ### AI-Powered Content Recommendations
 
-Using sophisticated machine learning algorithms, Quino recommends supplementary resources, practice exercises, and learning materials based on each student's unique learning profile. These recommendations become increasingly accurate as the system gathers more data about the student's interactions.
+Using sophisticated machine learning algorithms, Quino recommends supplementary resources, practice exercises, and learning materials based on each student's unique learning profile. These recommendations become increasingly accurate as the system gathers more data about the student's interactions. Quino's personalized learning approach ensures that students receive content that matches their learning style.
 
 ### Multimodal Learning Support
 
@@ -394,19 +413,19 @@ Research studies on Quino's effectiveness have shown promising results:
 
 ### K-12 Education
 
-In K-12 settings, Quino helps teachers manage diverse classrooms by providing each student with appropriately challenging material while giving educators insights into individual and class-wide progress.
+In K-12 settings, Quino helps teachers manage diverse classrooms by providing each student with appropriately challenging material while giving educators insights into individual and class-wide progress. The Quino learning platform has been particularly effective in supporting personalized learning in K-12 environments.
 
 ### Higher Education
 
-Universities use Quino to supplement lecture-based courses, providing students with personalized practice and application opportunities that reinforce classroom learning.
+Universities use Quino to supplement lecture-based courses, providing students with personalized practice and application opportunities that reinforce classroom learning. Quino's adaptive learning capabilities help bridge knowledge gaps and support diverse learning styles in higher education.
 
 ### Corporate Training
 
-Businesses implement Quino to upskill employees efficiently, ensuring that training programs address individual knowledge gaps without wasting time on already-mastered concepts.
+Businesses implement Quino to upskill employees efficiently, ensuring that training programs address individual knowledge gaps without wasting time on already-mastered concepts. The personalized learning approach of Quino has proven especially valuable for corporate training programs.
 
 ### Lifelong Learning
 
-Individual learners use Quino to pursue personal interests and professional development, benefiting from learning paths that adapt to their busy schedules and specific goals.
+Individual learners use Quino to pursue personal interests and professional development, benefiting from learning paths that adapt to their busy schedules and specific goals. The Quino platform makes online education more accessible and effective for self-directed learners.
 
 ## The Future of Personalized Learning
 
@@ -414,19 +433,36 @@ Quino represents the vanguard of a fundamental shift in education—moving away 
 
 The potential implications for educational equity are significant. By providing each learner with an experience optimized for their unique needs, AI-powered platforms may help level the playing field, ensuring that all students have the opportunity to learn in ways that work best for them.
 
-As we look to the future of education, Quino exemplifies how technology can enhance rather than replace the human elements of learning—providing tools that empower both students and educators to achieve better outcomes through personalization, data-driven insights, and adaptive methodologies.
+As we look to the future of education, Quino exemplifies how technology can enhance rather than replace the human elements of learning—providing tools that empower both students and educators to achieve better outcomes through personalization, data-driven insights, and adaptive methodologies. The Quino learning platform continues to evolve, setting new standards for what personalized online education can achieve.
         """,
         "seo": {
             "metaTitle": "Quino Learning Platform: AI-Powered Personalized Education",
             "metaDescription": "Discover how Quino's AI-driven learning platform is revolutionizing education with personalized learning paths, adaptive content, and real-time analytics.",
-            "metaKeywords": "quino, learning platform, AI education, personalized learning, adaptive learning, edtech, online education",
+            "keywords": "quino, learning platform, AI education, personalized learning, adaptive learning, edtech, online education",
             "metaRobots": "index, follow",
             "canonicalURL": "https://example.com/blog/quino-learning-platform",
-            "ogTitle": "Quino: The Future of Personalized Learning Is Here",
-            "ogDescription": "Explore how Quino is transforming education with AI-powered personalization, adaptive learning paths, and data-driven insights for better learning outcomes.",
-            "twitterTitle": "Quino: AI-Powered Learning Revolution",
-            "twitterDescription": "See how Quino's innovative approach to personalized education is changing the way we learn online with adaptive AI technology.",
-            "twitterCardType": "summary_large_image",
+            "preventIndexing": False,
+            "metaSocial": [],  # Will be updated after image upload
+            "structuredData": {
+                "@context": "https://schema.org",
+                "@type": "Article",
+                "headline": "Quino: Revolutionizing Online Learning with AI-Powered Personalization",
+                "description": "Discover how Quino is transforming the e-learning landscape with its innovative AI-driven approach to personalized education and adaptive learning paths.",
+                "keywords": "quino, learning platform, AI education, personalized learning, adaptive learning, edtech, online education",
+                "author": {"@type": "Person", "name": "Emma Wilson"},
+                "publisher": {
+                    "@type": "Organization",
+                    "name": "Example Tech Blog",
+                    "logo": {
+                        "@type": "ImageObject",
+                        "url": "https://example.com/logo.png",
+                    },
+                },
+                "mainEntityOfPage": {
+                    "@type": "WebPage",
+                    "@id": "https://example.com/blog/quino-learning-platform",
+                },
+            },
         },
         "ctas": [
             {
@@ -468,8 +504,8 @@ As we look to the future of education, Quino exemplifies how technology can enha
 ]
 
 
-def upload_image(image_path, name=None):
-    """Upload an image to Strapi media library"""
+def upload_image(image_path, name=None, alt_text=None):
+    """Upload an image to Strapi media library with alternative text"""
     print(f"📤 Uploading image: {image_path}")
 
     # Prepare the file for upload
@@ -477,10 +513,15 @@ def upload_image(image_path, name=None):
         "files": (os.path.basename(image_path), open(image_path, "rb"), "image/png")
     }
 
-    # Add name if provided
+    # Add name and alternative text if provided
     data = {}
-    if name:
-        data = {"fileInfo": json.dumps({"name": name})}
+    if name or alt_text:
+        file_info = {}
+        if name:
+            file_info["name"] = name
+        if alt_text:
+            file_info["alternativeText"] = alt_text
+        data = {"fileInfo": json.dumps(file_info)}
 
     # Send the request
     response = requests.post(
@@ -649,6 +690,21 @@ def create_article(article_data, author_id, category_ids, tag_ids, image_id):
         }
     }
 
+    # Update structured data with dynamic values
+    if "structuredData" in article_data["seo"]:
+        # Add publish and modified dates
+        payload["data"]["seo"]["structuredData"][
+            "datePublished"
+        ] = datetime.now().isoformat()
+        payload["data"]["seo"]["structuredData"][
+            "dateModified"
+        ] = datetime.now().isoformat()
+
+        # Add image URL placeholder (would be replaced with actual URL in frontend)
+        payload["data"]["seo"]["structuredData"][
+            "image"
+        ] = f"https://example.com/uploads/image-{image_id}.png"
+
     # Send the request
     response = requests.post(
         f"{STRAPI_API_URL}/articles", headers=headers, json=payload
@@ -676,21 +732,54 @@ def main():
     print("📝 Uploading images...")
     image_path = os.path.join(os.path.dirname(__file__), "test.png")
 
-    # Upload article featured images
-    article1_image_id = upload_image(image_path, "selenium_vs_puppeteer_featured")
-    article2_image_id = upload_image(image_path, "quino_learning_platform_featured")
+    # Upload article featured images with descriptive alt text
+    article1_image_id = upload_image(
+        image_path,
+        "selenium_vs_puppeteer_featured",
+        "Comparison of Selenium and Puppeteer web automation tools showing code examples and feature differences",
+    )
+    article2_image_id = upload_image(
+        image_path,
+        "quino_learning_platform_featured",
+        "Quino AI-powered learning platform interface showing personalized learning dashboard with adaptive content",
+    )
 
-    # Upload SEO images
-    seo1_image_id = upload_image(image_path, "selenium_vs_puppeteer_seo")
-    seo2_image_id = upload_image(image_path, "quino_learning_platform_seo")
+    # Upload SEO images with descriptive alt text
+    seo1_image_id = upload_image(
+        image_path,
+        "selenium_vs_puppeteer_seo",
+        "Visual comparison chart of Selenium and Puppeteer highlighting key differences in browser automation capabilities",
+    )
+    seo2_image_id = upload_image(
+        image_path,
+        "quino_learning_platform_seo",
+        "Quino educational platform showing AI-driven personalized learning experience with student progress analytics",
+    )
 
-    # Upload author profile image
-    author_image_id = upload_image(image_path, "emma_wilson_profile")
+    # Upload author profile image with descriptive alt text
+    author_image_id = upload_image(
+        image_path,
+        "emma_wilson_profile",
+        "Professional headshot of Emma Wilson, Senior Technical Writer specializing in web automation and educational technology",
+    )
 
-    # Upload category icons
+    # Upload category icons with descriptive alt text
     category_icons = {}
+    category_alt_texts = {
+        "web-automation": "Icon representing web automation tools and browser testing",
+        "educational-technology": "Icon representing educational technology and e-learning platforms",
+        "testing-tools": "Icon representing software testing tools and frameworks",
+        "javascript-tools": "Icon representing JavaScript libraries and development tools",
+    }
+
     for category in categories:
-        icon_id = upload_image(image_path, f"{category['slug']}_icon")
+        icon_id = upload_image(
+            image_path,
+            f"{category['slug']}_icon",
+            category_alt_texts.get(
+                category["slug"], f"Icon for {category['name']} category"
+            ),
+        )
         category_icons[category["slug"]] = icon_id
 
     print("✅ All images uploaded successfully\n")
@@ -721,11 +810,36 @@ def main():
             tag_ids.append(tag_id)
     print(f"✅ Created {len(tag_ids)} tags\n")
 
-    # Update SEO image IDs in articles
-    articles[0]["seo"]["ogImage"] = seo1_image_id
-    articles[0]["seo"]["twitterImage"] = seo1_image_id
-    articles[1]["seo"]["ogImage"] = seo2_image_id
-    articles[1]["seo"]["twitterImage"] = seo2_image_id
+    # Update SEO metaSocial data in articles
+    articles[0]["seo"]["metaSocial"] = [
+        {
+            "socialNetwork": "Facebook",
+            "title": "Selenium vs Puppeteer: Web Automation Tools Compared",
+            "description": "A detailed comparison of Selenium and Puppeteer for web automation, testing, and scraping to help you make the right choice for your project.",
+            "image": seo1_image_id,
+        },
+        {
+            "socialNetwork": "Twitter",
+            "title": "Selenium vs Puppeteer: Web Automation Tools Compared",
+            "description": "Compare features, performance, and use cases of Selenium and Puppeteer to choose the right web automation tool for your needs.",
+            "image": seo1_image_id,
+        },
+    ]
+
+    articles[1]["seo"]["metaSocial"] = [
+        {
+            "socialNetwork": "Facebook",
+            "title": "Quino: The Future of Personalized Learning Is Here",
+            "description": "Explore how Quino is transforming education with AI-powered personalization, adaptive learning paths, and data-driven insights for better learning outcomes.",
+            "image": seo2_image_id,
+        },
+        {
+            "socialNetwork": "Twitter",
+            "title": "Quino: AI-Powered Learning Revolution",
+            "description": "See how Quino's innovative approach to personalized education is changing the way we learn online with adaptive AI technology.",
+            "image": seo2_image_id,
+        },
+    ]
 
     # Create articles
     print("📝 Creating articles...")
