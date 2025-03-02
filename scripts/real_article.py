@@ -123,14 +123,6 @@ JSON_STRUCTURE = """
         "@type": "Person",
         "name": "Author name (will be filled automatically)"
       },
-      "publisher": {
-        "@type": "Organization",
-        "name": "Your Organization Name",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://yourwebsite.com/logo.png"
-        }
-      },
       "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": "URL to the article (will be filled automatically)"
@@ -337,14 +329,6 @@ def generate_seo_content(topic, author):
                     "datePublished": datetime.now().isoformat(),
                     "dateModified": datetime.now().isoformat(),
                     "author": {"@type": "Person", "name": author["name"]},
-                    "publisher": {
-                        "@type": "Organization",
-                        "name": "Your Organization Name",
-                        "logo": {
-                            "@type": "ImageObject",
-                            "url": "https://yourwebsite.com/logo.png",
-                        },
-                    },
                     "mainEntityOfPage": {
                         "@type": "WebPage",
                         "@id": f"https://yourwebsite.com/blog/{seo_data['article']['slug']}",
@@ -723,10 +707,11 @@ def create_article(
         seo_data["structuredData"]["headline"] = article_data["title"]
         seo_data["structuredData"]["description"] = article_data["summary"]
 
-        # Update mainEntityOfPage
-        seo_data["structuredData"]["mainEntityOfPage"][
-            "@id"
-        ] = f"https://yourwebsite.com/blog/{unique_slug}"
+        # TODO: Update mainEntityOfPage
+        # # Update mainEntityOfPage
+        # seo_data["structuredData"]["mainEntityOfPage"][
+        #     "@id"
+        # ] = f"https://yourwebsite.com/blog/{unique_slug}"
 
         # Image will be updated in the upload_to_strapi function
 
@@ -928,11 +913,12 @@ def upload_to_strapi(content, selected_author, image_path=None):
         print("❌ Failed to upload image. Exiting.")
         return False
 
-    # Update structured data with image URL (placeholder, will be replaced in frontend)
-    if "structuredData" in content["seo"]:
-        content["seo"]["structuredData"][
-            "image"
-        ] = f"https://example.com/uploads/image-{image_id}.png"
+    # TODO: Update structured data with image URL (placeholder, will be replaced in frontend)
+    # # Update structured data with image URL (placeholder, will be replaced in frontend)
+    # if "structuredData" in content["seo"]:
+    #     content["seo"]["structuredData"][
+    #         "image"
+    #     ] = f"https://example.com/uploads/image-{image_id}.png"
 
     # Update metaSocial entries with the image ID
     if "metaSocial" in content["seo"]:
@@ -999,9 +985,9 @@ def upload_to_strapi(content, selected_author, image_path=None):
 
 def main():
     """Main function to generate and upload SEO content"""
-    # Read topic from SEO_INSTRUCT.txt
+    # Read topic from SEO_INSTRUCT.md
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    input_file = os.path.join(script_dir, "SEO_INSTRUCT.txt")
+    input_file = os.path.join(script_dir, "SEO_INSTRUCT.md")
 
     try:
         with open(input_file, "r") as f:
@@ -1016,7 +1002,7 @@ def main():
         sys.exit(1)
 
     if not topic:
-        print("❌ Error: SEO_INSTRUCT.txt is empty. Please add your topic to the file.")
+        print("❌ Error: SEO_INSTRUCT.md is empty. Please add your topic to the file.")
         sys.exit(1)
 
     print(f"📖 Read topic from {input_file}: {topic}")
