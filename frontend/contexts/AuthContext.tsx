@@ -7,11 +7,15 @@ import {
   signOut as firebaseSignOut,
   onAuthStateChanged,
   User as FirebaseUser,
-  AuthError
+  AuthError,
+  getIdToken
 } from 'firebase/auth';
 import { auth } from '../utils/firebase';
 import { AuthContextType, AuthUser } from '../types/auth';
 import { toast } from 'react-toastify';
+import axios from 'axios';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -94,7 +98,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setError(null);
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      
+      // Get the ID token
+      const idToken = await getIdToken(result.user);
+      
+      // Send the token to the backend
+      await axios.post(`${API_URL}/auth/google`, { id_token: idToken });
+      
     } catch (err) {
       setError(err instanceof Error ? err : new Error('An error occurred during Google sign-in'));
       throw err;
@@ -104,17 +115,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signInWithEmailPassword = async (email: string, password: string) => {
     try {
       setError(null);
+      
+      // Call the backend API for email/password login
+      const response = await axios.post(`${API_URL}/auth/login/email`, { email, password });
+      
+      // After successful backend authentication, also authenticate with Firebase
+      // This ensures Firebase state is in sync with our backend
       await signInWithEmailAndPassword(auth, email, password);
+      
+      return response.data;
     } catch (err) {
       setError(err instanceof Error ? err : new Error('An error occurred during email/password sign-in'));
       throw err;
     }
   };
 
-  const registerWithEmailPassword = async (email: string, password: string) => {
+  const registerWithEmailPassword = async (email: string, password: string, fullName?: string) => {
     try {
       setError(null);
-      await createUserWithEmailAndPassword(auth, email, password);
+      
+      // Call the backend API for registration
+      const response = await axios.post(`${API_URL}/auth/register`, { 
+        email, 
+        password,
+        full_name: fullName || "" // Use the provided fullName or empty string
+      });
+      
+      // After successful backend registration, also authenticate with Firebase
+      // This ensures Firebase state is in sync with our backend
+      await signInWithEmailAndPassword(auth, email, password);
+      
+      return response.data;
     } catch (err) {
       setError(err instanceof Error ? err : new Error('An error occurred during registration'));
       throw err;
@@ -125,6 +156,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setError(null);
       await firebaseSignOut(auth);
+      // You might want to call a backend logout endpoint here if needed
     } catch (err) {
       setError(err instanceof Error ? err : new Error('An error occurred during sign-out'));
       throw err;

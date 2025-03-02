@@ -12,7 +12,12 @@ from app.db.models.user import User
 from app.schemas.token import Token
 from app.schemas.user import User as UserSchema
 from app.schemas.user import UserCreate, UserLogin, GoogleLogin
-from app.core.firebase_admin import verify_firebase_token, initialize_firebase_admin
+from app.core.firebase_admin import (
+    verify_firebase_token,
+    initialize_firebase_admin,
+    create_firebase_user,
+    get_firebase_user_by_email,
+)
 
 router = APIRouter()
 
@@ -35,6 +40,30 @@ def login(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user"
         )
+
+    # Ensure user has a Firebase UID
+    if not user.firebase_uid:
+        try:
+            # Initialize Firebase Admin SDK
+            initialize_firebase_admin()
+
+            # Check if user already exists in Firebase
+            firebase_user = get_firebase_user_by_email(user.email)
+
+            if firebase_user:
+                # User exists in Firebase, update our database with the Firebase UID
+                user.firebase_uid = firebase_user.uid
+            else:
+                # Create a new Firebase user
+                firebase_user = create_firebase_user(user.email, form_data.password)
+                user.firebase_uid = firebase_user.uid
+
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+        except Exception as e:
+            # Log the error but don't fail the login
+            print(f"Error syncing user with Firebase: {str(e)}")
 
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     return {
@@ -61,6 +90,30 @@ def login_email(user_in: UserLogin, db: Session = Depends(get_db)) -> Any:
             status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user"
         )
 
+    # Ensure user has a Firebase UID
+    if not user.firebase_uid:
+        try:
+            # Initialize Firebase Admin SDK
+            initialize_firebase_admin()
+
+            # Check if user already exists in Firebase
+            firebase_user = get_firebase_user_by_email(user.email)
+
+            if firebase_user:
+                # User exists in Firebase, update our database with the Firebase UID
+                user.firebase_uid = firebase_user.uid
+            else:
+                # Create a new Firebase user
+                firebase_user = create_firebase_user(user.email, user_in.password)
+                user.firebase_uid = firebase_user.uid
+
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+        except Exception as e:
+            # Log the error but don't fail the login
+            print(f"Error syncing user with Firebase: {str(e)}")
+
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     return {
         "access_token": create_access_token(
@@ -75,6 +128,7 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)) -> Any:
     """
     Register a new user.
     """
+    # Check if user already exists in our database
     user = db.query(User).filter(User.email == user_in.email).first()
     if user:
         raise HTTPException(
@@ -82,24 +136,47 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)) -> Any:
             detail="Email already registered",
         )
 
-    new_user = User(
-        email=user_in.email,
-        hashed_password=get_password_hash(user_in.password),
-        full_name=user_in.full_name,
-        is_active=True,
-        is_superuser=False,
-    )
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+    try:
+        # Initialize Firebase Admin SDK
+        initialize_firebase_admin()
 
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    return {
-        "access_token": create_access_token(
-            subject=new_user.id, expires_delta=access_token_expires
-        ),
-        "token_type": "bearer",
-    }
+        # Check if user already exists in Firebase
+        firebase_user = None
+        try:
+            firebase_user = get_firebase_user_by_email(user_in.email)
+        except Exception:
+            # User doesn't exist in Firebase, which is fine for registration
+            pass
+
+        if not firebase_user:
+            # Create a new Firebase user
+            firebase_user = create_firebase_user(user_in.email, user_in.password)
+
+        # Create user in our database with Firebase UID
+        new_user = User(
+            email=user_in.email,
+            hashed_password=get_password_hash(user_in.password),
+            full_name=user_in.full_name,
+            is_active=True,
+            is_superuser=False,
+            firebase_uid=firebase_user.uid,
+        )
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+
+        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        return {
+            "access_token": create_access_token(
+                subject=new_user.id, expires_delta=access_token_expires
+            ),
+            "token_type": "bearer",
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error creating user: {str(e)}",
+        )
 
 
 @router.post("/google", response_model=Token)
@@ -117,7 +194,18 @@ def google_login(google_in: GoogleLogin, db: Session = Depends(get_db)) -> Any:
         # Check if user exists in our database
         user = db.query(User).filter(User.firebase_uid == user_info["uid"]).first()
 
-        # If user doesn't exist, create them
+        # If user doesn't exist by firebase_uid, try to find by email
+        if not user:
+            user = db.query(User).filter(User.email == user_info["email"]).first()
+
+            # If found by email but no firebase_uid, update the user with the firebase_uid
+            if user:
+                user.firebase_uid = user_info["uid"]
+                db.add(user)
+                db.commit()
+                db.refresh(user)
+
+        # If user still doesn't exist, create them
         if not user:
             user = User(
                 email=user_info["email"],

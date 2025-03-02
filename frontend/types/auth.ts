@@ -13,6 +13,6 @@ export interface AuthContextType {
   error: Error | null;
   signInWithGoogle: () => Promise<void>;
   signInWithEmailPassword: (email: string, password: string) => Promise<void>;
-  registerWithEmailPassword: (email: string, password: string) => Promise<void>;
+  registerWithEmailPassword: (email: string, password: string, fullName?: string) => Promise<void>;
   signOut: () => Promise<void>;
 } 

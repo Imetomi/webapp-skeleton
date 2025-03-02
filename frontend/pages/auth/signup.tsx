@@ -15,6 +15,7 @@ export default function SignUpPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [fullName, setFullName] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
 
   // Redirect if already logged in
@@ -53,7 +54,7 @@ export default function SignUpPage() {
     }
 
     try {
-      await registerWithEmailPassword(email, password);
+      await registerWithEmailPassword(email, password, fullName);
       router.push('/dashboard');
     } catch (err) {
       console.error('Registration error:', err);
@@ -101,6 +102,20 @@ export default function SignUpPage() {
                 <form className="space-y-6" onSubmit={handleSubmit}>
                   <div className="rounded-md shadow-sm -space-y-px">
                     <div>
+                      <label htmlFor="full-name" className="sr-only">Full Name</label>
+                      <input
+                        id="full-name"
+                        name="full-name"
+                        type="text"
+                        autoComplete="name"
+                        required
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                        placeholder="Full Name"
+                      />
+                    </div>
+                    <div>
                       <label htmlFor="email-address" className="sr-only">Email address</label>
                       <input
                         id="email-address"
@@ -110,7 +125,7 @@ export default function SignUpPage() {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                        className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                         placeholder="Email address"
                       />
                     </div>
