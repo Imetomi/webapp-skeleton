@@ -1,9 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
   ],
   darkMode: 'class',
   theme: {
@@ -37,7 +36,85 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
       },
+      typography: ({ theme }) => ({
+        DEFAULT: {
+          css: {
+            color: theme('colors.gray.700'),
+            maxWidth: 'none',
+            lineHeight: '1.75',
+            a: {
+              color: theme('colors.primary.500'),
+              textDecoration: 'none',
+              '&:hover': {
+                color: theme('colors.primary.600'),
+              },
+            },
+            'h1, h2, h3, h4': {
+              color: theme('colors.gray.900'),
+              fontWeight: '600',
+            },
+            table: {
+              fontSize: theme('fontSize.base'),
+              lineHeight: theme('lineHeight.normal'),
+              width: '100%',
+              marginTop: '1.5em',
+              marginBottom: '1.5em',
+            },
+            thead: {
+              borderBottomWidth: '1px',
+              borderBottomColor: theme('colors.gray.200'),
+            },
+            'thead th': {
+              color: theme('colors.gray.600'),
+              fontWeight: '500',
+              paddingBottom: '0.857em',
+              paddingTop: '0.857em',
+              paddingRight: '2rem',
+            },
+            'tbody tr': {
+              borderBottomWidth: '1px',
+              borderBottomColor: theme('colors.gray.100'),
+              '&:last-child': {
+                borderBottomWidth: '0',
+              },
+            },
+            'tbody td': {
+              paddingBottom: '0.857em',
+              paddingTop: '0.857em',
+              paddingRight: '2rem',
+              verticalAlign: 'middle',
+            },
+            // Dark mode
+            '.dark &': {
+              color: theme('colors.gray.300'),
+              'h1, h2, h3, h4': {
+                color: theme('colors.white'),
+              },
+              a: {
+                color: theme('colors.primary.400'),
+                '&:hover': {
+                  color: theme('colors.primary.300'),
+                },
+              },
+              thead: {
+                borderBottomColor: theme('colors.gray.800'),
+              },
+              'thead th': {
+                color: theme('colors.gray.400'),
+              },
+              'tbody tr': {
+                borderBottomColor: theme('colors.gray.800/50'),
+              },
+            },
+          },
+        },
+      }),
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography')({
+      className: 'prose',
+      target: 'modern',
+    }),
+  ],
 }
