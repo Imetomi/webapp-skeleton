@@ -57,36 +57,27 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
           <NavigationMenu.Root className="relative">
             <NavigationMenu.List className="flex space-x-6">
               <NavigationMenu.Item>
-                <NavigationMenu.Link
-                  className={`text-base text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-accent-400 ${
-                    router.pathname === '/pricing' ? 'text-primary-600 dark:text-accent-400' : ''
-                  }`}
-                  href="/pricing"
-                >
+                <Link href="/pricing" className={`text-base text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-accent-400 ${
+                  router.pathname === '/pricing' ? 'text-primary-600 dark:text-accent-400' : ''
+                }`}>
                   Pricing
-                </NavigationMenu.Link>
+                </Link>
               </NavigationMenu.Item>
               
               <NavigationMenu.Item>
-                <NavigationMenu.Link
-                  className={`text-base text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-accent-400 ${
-                    router.pathname === '/blog' ? 'text-primary-600 dark:text-accent-400' : ''
-                  }`}
-                  href="/blog"
-                >
+                <Link href="/blog" className={`text-base text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-accent-400 ${
+                  router.pathname === '/blog' ? 'text-primary-600 dark:text-accent-400' : ''
+                }`}>
                   Blog
-                </NavigationMenu.Link>
+                </Link>
               </NavigationMenu.Item>
               
               <NavigationMenu.Item>
-                <NavigationMenu.Link
-                  className={`text-base text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-accent-400 ${
-                    router.pathname === '/about' ? 'text-primary-600 dark:text-accent-400' : ''
-                  }`}
-                  href="/about"
-                >
+                <Link href="/about" className={`text-base text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-accent-400 ${
+                  router.pathname === '/about' ? 'text-primary-600 dark:text-accent-400' : ''
+                }`}>
                   About
-                </NavigationMenu.Link>
+                </Link>
               </NavigationMenu.Item>
             </NavigationMenu.List>
           </NavigationMenu.Root>
