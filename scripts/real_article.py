@@ -999,36 +999,27 @@ def upload_to_strapi(content, selected_author, image_path=None):
 
 def main():
     """Main function to generate and upload SEO content"""
-    parser = argparse.ArgumentParser(
-        description="Generate and upload SEO-optimized content to Strapi CMS"
-    )
-    parser.add_argument("topic", nargs="?", help="Topic for the SEO article")
-    args = parser.parse_args()
+    # Read topic from SEO_INSTRUCT.txt
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    input_file = os.path.join(script_dir, "SEO_INSTRUCT.txt")
 
-    # Check for required environment variables
-    missing_vars = []
-    if not STRAPI_API_URL:
-        missing_vars.append("STRAPI_API_URL")
-    if not STRAPI_API_TOKEN:
-        missing_vars.append("STRAPI_API_TOKEN")
-    if not AZURE_OPENAI_API_KEY:
-        missing_vars.append("AZURE_OPENAI_API_KEY")
-    if not AZURE_OPENAI_ENDPOINT:
-        missing_vars.append("AZURE_OPENAI_ENDPOINT")
-
-    if missing_vars:
-        print(f"❌ Missing environment variables: {', '.join(missing_vars)}")
-        print("Please set these variables in your .env file or environment.")
+    try:
+        with open(input_file, "r") as f:
+            topic = f.read().strip()
+    except FileNotFoundError:
+        print(
+            f"❌ Error: {input_file} not found. Please create this file with your SEO topic."
+        )
+        sys.exit(1)
+    except Exception as e:
+        print(f"❌ Error reading {input_file}: {str(e)}")
         sys.exit(1)
 
-    # Get topic from command line or prompt
-    topic = args.topic
     if not topic:
-        topic = input("Enter a topic for your SEO article: ")
+        print("❌ Error: SEO_INSTRUCT.txt is empty. Please add your topic to the file.")
+        sys.exit(1)
 
-    # Get author information first
-    print("\n👤 Let's select an author for this article before generating content.")
-    print("This will ensure the article has accurate author information for SEO.")
+    print(f"📖 Read topic from {input_file}: {topic}")
 
     # Get existing authors
     existing_authors = get_authors()

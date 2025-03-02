@@ -1,0 +1,10 @@
+Make a comparative seo article about the two companies, colossyan and synthesia 
+
+Use these links in the references too in the JSON:
+https://www.colossyan.com
+https://www.synthesia.io
+
+Use this link in the CTA:
+Try Webskeleton for free
+https://quino.ai
+
