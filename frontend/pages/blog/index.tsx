@@ -6,12 +6,16 @@ import Navbar from '../../components/layout/Navbar';
 import { getArticles } from '../../utils/strapi';
 import { ArticleListResponse } from '../../types/blog';
 import { formatDate } from '../../utils/strapi';
+import { useTheme } from '../../contexts/ThemeContext';
 
 interface BlogPageProps {
   articles: ArticleListResponse;
 }
 
 export default function BlogPage({ articles }: BlogPageProps) {
+  const { theme, toggleTheme } = useTheme();
+  const isDarkMode = theme === 'dark';
+
   console.log('Articles data:', articles); // Debug log
 
   if (!articles?.data || articles.data.length === 0) {
@@ -22,7 +26,7 @@ export default function BlogPage({ articles }: BlogPageProps) {
           <meta name="description" content="Insights, updates, and stories from our team" />
         </Head>
 
-        <Navbar isDarkMode={false} toggleDarkMode={() => {}} />
+        <Navbar isDarkMode={isDarkMode} toggleDarkMode={toggleTheme} />
 
         <main className="min-h-screen bg-white dark:bg-gray-900">
           <div className="pt-32 pb-16 px-4 max-w-4xl mx-auto">
@@ -45,8 +49,7 @@ export default function BlogPage({ articles }: BlogPageProps) {
         <meta name="description" content="Insights, updates, and stories from our team" />
       </Head>
 
-      {/* Navbar with dark mode toggle */}
-      <Navbar isDarkMode={false} toggleDarkMode={() => {}} />
+      <Navbar isDarkMode={isDarkMode} toggleDarkMode={toggleTheme} />
 
       <main className="min-h-screen bg-white dark:bg-gray-900">
         {/* Blog Header Section */}

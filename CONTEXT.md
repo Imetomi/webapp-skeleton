@@ -26,3 +26,5 @@
 4. If you see linter errors in the editor that may not be a problem since the editor is not connected to dockerized environment, does not see the installed packages there. 
 
 5. The colors are also specified in the tailwind component. 
+
+6. AGAIN, LINTER ERRORS ARE FINE, DO NOT FIX THEM
