@@ -76,10 +76,16 @@ export default function SignUpPage() {
           {/* Left side - Sign up form */}
           <div className="w-full lg:w-1/2 flex flex-col">
             <div className="p-6">
-              <Link href="/" className="inline-flex items-center text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
-                <ArrowLeft size={16} className="mr-2" />
-                <span className="text-sm font-medium">Back to home</span>
-              </Link>
+              {/* Back to Home Link */}
+              <div className="absolute top-8 left-8">
+                <Link 
+                  href="/"
+                  className="inline-flex items-center text-base text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                >
+                  <ArrowLeft size={16} className="mr-1" />
+                  Back to home
+                </Link>
+              </div>
             </div>
             
             <div className="flex-1 flex items-center justify-center p-8 pt-0">

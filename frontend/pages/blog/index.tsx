@@ -67,51 +67,56 @@ export default function BlogPage({ articles }: BlogPageProps) {
             {articles.data.map((article) => {
               return (
                 <article key={article.id} className="group">
-                  <Link href={`/blog/${article.attributes.slug}`} prefetch scroll={false}>
-                    <div className="space-y-4">
-                      {/* Article Meta */}
-                      <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
-                        <span className="uppercase tracking-wider">
-                          {formatDate(article.attributes.publishDate)}
-                        </span>
-                        <span>•</span>
-                        <div className="flex items-center">
-                          <Clock size={14} className="mr-1" />
-                          <span>{article.attributes.readingTime} min read</span>
-                        </div>
-                      </div>
-
-                      {/* Article Title */}
-                      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                        {article.attributes.title}
-                      </h2>
-
-                      {/* Article Summary */}
-                      <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-                        {article.attributes.summary}
-                      </p>
-
-                      {/* Read More Link */}
-                      <div className="pt-2">
-                        <span className="inline-flex items-center text-primary-600 dark:text-primary-400 font-medium group-hover:text-primary-700 dark:group-hover:text-primary-300">
-                          Read more
-                          <svg
-                            className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 5l7 7-7 7"
-                            />
-                          </svg>
-                        </span>
+                  <div className="space-y-4">
+                    {/* Article Meta */}
+                    <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 pb-2">
+                      <span className="uppercase tracking-wider">
+                        {formatDate(article.attributes.publishDate)}
+                      </span>
+                      <span>•</span>
+                      <div className="flex items-center">
+                        <Clock size={14} className="mr-1" />
+                        <span>{article.attributes.readingTime} min read</span>
                       </div>
                     </div>
-                  </Link>
+
+                    {/* Article Title */}
+                    <Link href={`/blog/${article.attributes.slug}`} prefetch scroll={false}>
+                      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                        {article.attributes.title}
+                      </h2>
+                    </Link>
+
+                    {/* Article Summary */}
+                    <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                      {article.attributes.summary}
+                    </p>
+
+                    {/* Read More Link */}
+                    <div className="pt-2">
+                      <Link 
+                        href={`/blog/${article.attributes.slug}`} 
+                        prefetch 
+                        scroll={false}
+                        className="inline-flex items-center text-primary-500 dark:text-primary-400 font-medium hover:text-primary-600 dark:hover:text-primary-300"
+                      >
+                        Read more
+                        <svg
+                          className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </Link>
+                    </div>
+                  </div>
                 </article>
               );
             })}

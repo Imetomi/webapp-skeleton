@@ -57,24 +57,24 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
           <NavigationMenu.Root className="relative">
             <NavigationMenu.List className="flex space-x-6">
               <NavigationMenu.Item>
-                <Link href="/pricing" className={`text-base text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-accent-400 ${
-                  router.pathname === '/pricing' ? 'text-primary-600 dark:text-accent-400' : ''
+                <Link href="/pricing" className={`text-base text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white ${
+                  router.pathname === '/pricing' ? 'text-gray-900 font-semibold dark:text-white' : ''
                 }`}>
                   Pricing
                 </Link>
               </NavigationMenu.Item>
               
               <NavigationMenu.Item>
-                <Link href="/blog" className={`text-base text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-accent-400 ${
-                  router.pathname === '/blog' ? 'text-primary-600 dark:text-accent-400' : ''
+                <Link href="/blog" className={`text-base text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white ${
+                  router.pathname === '/blog' ? 'text-gray-900 font-semibold dark:text-white' : ''
                 }`}>
                   Blog
                 </Link>
               </NavigationMenu.Item>
               
               <NavigationMenu.Item>
-                <Link href="/about" className={`text-base text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-accent-400 ${
-                  router.pathname === '/about' ? 'text-primary-600 dark:text-accent-400' : ''
+                <Link href="/about" className={`text-base text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white ${
+                  router.pathname === '/about' ? 'text-gray-900 font-semibold dark:text-white' : ''
                 }`}>
                   About
                 </Link>

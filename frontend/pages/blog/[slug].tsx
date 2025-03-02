@@ -70,7 +70,7 @@ export default function ArticlePage({ article }: ArticlePageProps) {
         <div className="max-w-3xl mx-auto px-4 pt-24">
           <Link 
             href="/blog"
-            className="inline-flex items-center text-sm text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
+            className="inline-flex items-center text-base text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
           >
             <ArrowLeft size={16} className="mr-1" />
             Back to blog
