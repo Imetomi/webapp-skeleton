@@ -213,6 +213,69 @@ export default function ArticlePage({ article }: ArticlePageProps) {
             </ReactMarkdown>
           </div>
 
+
+          {/* References Section */}
+          {attributes.references && attributes.references.length > 0 && (
+            <div className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">References</h2>
+              <div className="space-y-6">
+                {attributes.references.map((reference) => (
+                  <div key={reference.id} className="group">
+                    <a
+                      href={reference.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-6 bg-gray-50 dark:bg-gray-800/50 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+                    >
+                      <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-primary-500 dark:group-hover:text-primary-400 mb-2">
+                        {reference.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                        {reference.description}
+                      </p>
+                      <div className="flex items-center text-xs text-gray-500 dark:text-gray-500">
+                        <span>{reference.authors}</span>
+                        <span className="mx-2">•</span>
+                        <span>{reference.publisher}</span>
+                        <span className="mx-2">•</span>
+                        <span>{formatDate(reference.publishDate)}</span>
+                      </div>
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* CTAs Section */}
+          {attributes.cta && attributes.cta.length > 0 && (
+            <div className="mt-5 pt-0 border-gray-200">
+              <div className="flex flex-col space-y-4">
+                {attributes.cta.map((cta) => {
+                  const Icon = cta.icon ? require('lucide-react')[cta.icon] : null;
+                  return (
+                    <a
+                      key={cta.id}
+                      href={cta.url}
+                      target={cta.newTab ? "_blank" : "_self"}
+                      rel={cta.newTab ? "noopener noreferrer" : ""}
+                      className={`
+                        inline-flex items-center justify-center px-6 py-4 rounded-lg font-medium transition-colors
+                        ${cta.type === 'primary' 
+                          ? 'bg-primary-500 text-white hover:bg-primary-600 dark:bg-primary-600 dark:hover:bg-primary-700' 
+                          : 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700'}
+                      `}
+                    >
+                      <span>{cta.text}</span>
+                      {Icon && <Icon className="ml-2 h-5 w-5" />}
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+
           {/* Author Bio */}
           <footer className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800">
             <div className="flex items-center">

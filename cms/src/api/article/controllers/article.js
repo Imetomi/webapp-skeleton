@@ -8,10 +8,13 @@ const { createCoreController } = require('@strapi/strapi').factories;
 
 module.exports = createCoreController('api::article.article', ({ strapi }) => ({
   async find(ctx) {
-    // Add populate to get related data
+    // Merge any existing populate with our required populate
+    const populate = ctx.query.populate ? { ...ctx.query.populate } : {};
+    
     ctx.query = {
       ...ctx.query,
       populate: {
+        ...populate,
         featuredImage: true,
         author: {
           populate: ['profilePicture']
@@ -19,8 +22,11 @@ module.exports = createCoreController('api::article.article', ({ strapi }) => ({
         categories: true,
         tags: true,
         seo: {
-          populate: ['ogImage', 'twitterImage']
-        }
+          populate: ['ogImage', 'twitterImage', 'metaSocial']
+        },
+        gallery: true,
+        references: true,
+        cta: true
       }
     };
     
@@ -29,10 +35,13 @@ module.exports = createCoreController('api::article.article', ({ strapi }) => ({
   },
   
   async findOne(ctx) {
-    // Add populate to get related data
+    // Merge any existing populate with our required populate
+    const populate = ctx.query.populate ? { ...ctx.query.populate } : {};
+    
     ctx.query = {
       ...ctx.query,
       populate: {
+        ...populate,
         featuredImage: true,
         author: {
           populate: ['profilePicture', 'socialLinks']
@@ -40,13 +49,11 @@ module.exports = createCoreController('api::article.article', ({ strapi }) => ({
         categories: true,
         tags: true,
         seo: {
-          populate: ['ogImage', 'twitterImage']
-        },
-        sections: {
-          populate: ['media', 'callToAction']
+          populate: ['ogImage', 'twitterImage', 'metaSocial']
         },
         gallery: true,
         references: true,
+        cta: true,
         relatedArticles: {
           populate: ['featuredImage', 'author']
         }
@@ -55,5 +62,46 @@ module.exports = createCoreController('api::article.article', ({ strapi }) => ({
     
     const { data, meta } = await super.findOne(ctx);
     return { data, meta };
+  },
+
+  async findBySlug(ctx) {
+    const { slug } = ctx.params;
+    
+    // Set the filters to find by slug
+    ctx.query = {
+      ...ctx.query,
+      filters: {
+        slug: {
+          $eq: slug
+        }
+      },
+      populate: {
+        featuredImage: true,
+        author: {
+          populate: ['profilePicture', 'socialLinks']
+        },
+        categories: true,
+        tags: true,
+        seo: {
+          populate: ['ogImage', 'twitterImage', 'metaSocial']
+        },
+        gallery: true,
+        references: true,
+        cta: true,
+        relatedArticles: {
+          populate: ['featuredImage', 'author']
+        }
+      }
+    };
+    
+    // Use the find method to get the article by slug
+    const { data, meta } = await super.find(ctx);
+    
+    // Return the first item if found, otherwise return null
+    if (data && data.length > 0) {
+      return { data: data[0], meta };
+    }
+    
+    return { data: null, meta };
   }
 })); 

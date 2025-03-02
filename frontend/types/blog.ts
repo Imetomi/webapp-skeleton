@@ -50,6 +50,26 @@ export interface StrapiSEO {
   };
 }
 
+export interface Reference {
+  id: number;
+  title: string;
+  description: string;
+  url: string;
+  authors: string;
+  publisher: string;
+  publishDate: string;
+  referenceType: string;
+}
+
+export interface CTA {
+  id: number;
+  text: string;
+  url: string;
+  type: string;
+  icon: string;
+  newTab: boolean;
+}
+
 export interface Article {
   id: number;
   attributes: {
@@ -63,6 +83,8 @@ export interface Article {
     featured: boolean;
     featuredImage: StrapiImage;
     seo: StrapiSEO;
+    references: Reference[];
+    cta: CTA[];
     createdAt: string;
     updatedAt: string;
   };

@@ -26,7 +26,7 @@ module.exports = {
     {
       method: 'GET',
       path: '/articles/slug/:slug',
-      handler: 'article.findOne',
+      handler: 'article.findBySlug',
       config: {
         auth: false,
       },
