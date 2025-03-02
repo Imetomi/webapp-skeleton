@@ -88,9 +88,14 @@ export default function BlogPage({ articles }: BlogPageProps) {
                     </Link>
 
                     {/* Article Summary */}
-                    <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                    <Link 
+                      href={`/blog/${article.attributes.slug}`} 
+                      prefetch 
+                      scroll={false}
+                      className="block text-lg text-gray-600 dark:text-gray-300 leading-relaxed hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+                    >
                       {article.attributes.summary}
-                    </p>
+                    </Link>
 
                     {/* Read More Link */}
                     <div className="pt-2">

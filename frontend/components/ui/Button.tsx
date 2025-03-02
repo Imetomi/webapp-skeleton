@@ -1,10 +1,11 @@
 import React from 'react';
+import { Slot } from '@radix-ui/react-slot';
 import { VariantProps, cva } from 'class-variance-authority';
 import { cn } from '../../utils/cn';
 
 const buttonVariants = cva(
   // Base styles - making them more streamlined and elegant
-  'font-medium rounded-md transition-colors text-center tracking-normal',
+  'font-medium rounded-md transition-colors text-center tracking-normal inline-flex items-center justify-center cursor-pointer w-fit',
   {
     variants: {
       variant: {
@@ -21,11 +22,13 @@ const buttonVariants = cva(
       },
       fullWidth: {
         true: 'w-full',
+        false: 'w-auto'
       },
     },
     defaultVariants: {
       variant: 'primary',
       size: 'default',
+      fullWidth: false
     },
   }
 );
@@ -37,9 +40,10 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, fullWidth, ...props }, ref) => {
+  ({ className, variant, size, fullWidth, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button";
     return (
-      <button
+      <Comp
         className={cn(buttonVariants({ variant, size, fullWidth }), className)}
         ref={ref}
         {...props}

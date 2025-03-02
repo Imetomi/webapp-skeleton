@@ -85,7 +85,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
           {/* Dark Mode Toggle */}
           <button
             onClick={toggleDarkMode}
-            className="p-1 rounded-full text-gray-600 hover:bg-gray-100 dark:text-accent-300 dark:hover:bg-gray-800"
+            className="p-1 rounded-full text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-800"
             aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
           >
             {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}

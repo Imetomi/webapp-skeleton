@@ -33,14 +33,14 @@ const AboutPage: React.FC = () => {
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
                 <div className="p-8 md:p-12">
                   <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Our Story</h2>
-                  <div className="prose prose-lg dark:prose-invert max-w-none">
-                    <p>
+                  <div className="space-y-6 text-lg">
+                    <p className="text-gray-600 dark:text-gray-300">
                       WebApp was founded in 2023 by a team of developers who were frustrated with the complexity of implementing secure authentication in their projects. We believed there had to be a better way.
                     </p>
-                    <p>
+                    <p className="text-gray-600 dark:text-gray-300">
                       Our team set out to build an authentication solution that would be simple to implement, secure by default, and flexible enough to meet the needs of modern web applications. After months of development and testing, WebApp was born.
                     </p>
-                    <p>
+                    <p className="text-gray-600 dark:text-gray-300">
                       Today, WebApp is used by thousands of developers around the world to secure their applications and provide a seamless authentication experience for their users.
                     </p>
                   </div>
