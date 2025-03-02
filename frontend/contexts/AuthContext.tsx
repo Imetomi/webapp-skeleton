@@ -6,10 +6,12 @@ import {
   createUserWithEmailAndPassword,
   signOut as firebaseSignOut,
   onAuthStateChanged,
-  User as FirebaseUser
+  User as FirebaseUser,
+  AuthError
 } from 'firebase/auth';
 import { auth } from '../utils/firebase';
 import { AuthContextType, AuthUser } from '../types/auth';
+import { toast } from 'react-toastify';
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -28,10 +30,51 @@ const mapFirebaseUser = (user: FirebaseUser): AuthUser => ({
   photoURL: user.photoURL,
 });
 
+// Function to get user-friendly error messages
+const getFriendlyErrorMessage = (error: Error): string => {
+  const errorCode = (error as AuthError).code;
+  
+  switch (errorCode) {
+    case 'auth/invalid-credential':
+      return 'Invalid credentials. Please check your email and password and try again.';
+    case 'auth/user-not-found':
+      return 'No account found with this email. Please check your email or create a new account.';
+    case 'auth/wrong-password':
+      return 'Incorrect password. Please try again.';
+    case 'auth/email-already-in-use':
+      return 'An account with this email already exists. Please use a different email or sign in.';
+    case 'auth/weak-password':
+      return 'Password is too weak. Please use a stronger password.';
+    case 'auth/too-many-requests':
+      return 'Too many unsuccessful login attempts. Please try again later or reset your password.';
+    case 'auth/network-request-failed':
+      return 'Network error. Please check your internet connection and try again.';
+    case 'auth/popup-closed-by-user':
+      return 'Sign-in popup was closed before completing the sign in. Please try again.';
+    default:
+      return error.message;
+  }
+};
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+
+  // Display toast notification when error changes
+  useEffect(() => {
+    if (error) {
+      const friendlyMessage = getFriendlyErrorMessage(error);
+      toast.error(friendlyMessage, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+  }, [error]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {

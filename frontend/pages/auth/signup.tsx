@@ -6,9 +6,11 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useRouter } from 'next/router';
 import { Button } from '../../components/ui/Button';
 import { ArrowLeft } from 'lucide-react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function SignUpPage() {
-  const { user, loading, registerWithEmailPassword, error } = useAuth();
+  const { user, loading, registerWithEmailPassword } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,6 +23,20 @@ export default function SignUpPage() {
       router.push('/dashboard');
     }
   }, [user, loading, router]);
+
+  // Display form error toast when formError changes
+  React.useEffect(() => {
+    if (formError) {
+      toast.error(formError, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+  }, [formError]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +57,7 @@ export default function SignUpPage() {
       router.push('/dashboard');
     } catch (err) {
       console.error('Registration error:', err);
+      // Error will be handled by the AuthContext
     }
   };
 
@@ -51,107 +68,104 @@ export default function SignUpPage() {
         <meta name="description" content="Create a new WebApp account" />
       </Head>
 
-      <div className="min-h-screen flex flex-col">
-        {/* Back button */}
-        <div className="pt-8 px-8">
-          <Link href="/" className="inline-flex items-center text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
-            <ArrowLeft size={20} className="mr-2" />
-            <span className="text-lg font-medium">Back to Home</span>
-          </Link>
-        </div>
+      <ToastContainer />
 
+      <div className="min-h-screen flex flex-col">
         <div className="flex flex-1">
           {/* Left side - Sign up form */}
-          <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
-            <div className="max-w-md w-full space-y-8">
-              <div>
-                <Link href="/" className="text-xl font-bold text-primary-600 dark:text-accent-400">
-                  WebApp
-                </Link>
-                <h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">
-                  Create a new account
-                </h2>
-                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                  Or{' '}
-                  <Link href="/auth/signin" className="font-medium text-primary-600 hover:text-primary-500 dark:text-accent-400 dark:hover:text-accent-300">
-                    sign in to your existing account
-                  </Link>
-                </p>
-              </div>
-              
-              <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                <div className="rounded-md shadow-sm -space-y-px">
-                  <div>
-                    <label htmlFor="email-address" className="sr-only">Email address</label>
-                    <input
-                      id="email-address"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                      placeholder="Email address"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="password" className="sr-only">Password</label>
-                    <input
-                      id="password"
-                      name="password"
-                      type="password"
-                      autoComplete="new-password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                      placeholder="Password"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="confirm-password" className="sr-only">Confirm Password</label>
-                    <input
-                      id="confirm-password"
-                      name="confirm-password"
-                      type="password"
-                      autoComplete="new-password"
-                      required
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                      placeholder="Confirm Password"
-                    />
-                  </div>
-                </div>
-
-                {(formError || error) && (
-                  <div className="text-sm text-red-600">
-                    {formError || error?.message}
-                  </div>
-                )}
-
+          <div className="w-full lg:w-1/2 flex flex-col">
+            <div className="p-6">
+              <Link href="/" className="inline-flex items-center text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 transition-colors">
+                <ArrowLeft size={16} className="mr-2" />
+                <span className="text-sm font-medium">Back to home</span>
+              </Link>
+            </div>
+            
+            <div className="flex-1 flex items-center justify-center p-8 pt-0">
+              <div className="max-w-md w-full space-y-6">
                 <div>
-                  <Button type="submit" fullWidth>
-                    Sign up
-                  </Button>
+                  <Link href="/" className="text-xl font-bold text-primary-600 dark:text-accent-400">
+                    WebApp
+                  </Link>
+                  <h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">
+                    Create a new account
+                  </h2>
+                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                    Or{' '}
+                    <Link href="/auth/signin" className="font-medium text-primary-600 hover:text-primary-500 dark:text-accent-400 dark:hover:text-accent-300">
+                      sign in to your existing account
+                    </Link>
+                  </p>
                 </div>
-
-                <div className="mt-6">
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-gray-300 dark:border-gray-700"></div>
+                
+                <form className="space-y-6" onSubmit={handleSubmit}>
+                  <div className="rounded-md shadow-sm -space-y-px">
+                    <div>
+                      <label htmlFor="email-address" className="sr-only">Email address</label>
+                      <input
+                        id="email-address"
+                        name="email"
+                        type="email"
+                        autoComplete="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                        placeholder="Email address"
+                      />
                     </div>
-                    <div className="relative flex justify-center text-sm">
-                      <span className="px-2 bg-white text-gray-500 dark:bg-gray-900 dark:text-gray-400">Or continue with</span>
+                    <div>
+                      <label htmlFor="password" className="sr-only">Password</label>
+                      <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        autoComplete="new-password"
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                        placeholder="Password"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="confirm-password" className="sr-only">Confirm Password</label>
+                      <input
+                        id="confirm-password"
+                        name="confirm-password"
+                        type="password"
+                        autoComplete="new-password"
+                        required
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                        placeholder="Confirm Password"
+                      />
                     </div>
                   </div>
 
-                  <div className="mt-6 w-full">
-                    <LoginButton />
+                  <div>
+                    <Button type="submit" fullWidth>
+                      Sign up
+                    </Button>
                   </div>
-                </div>
-              </form>
+
+                  <div className="mt-6">
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-gray-300 dark:border-gray-700"></div>
+                      </div>
+                      <div className="relative flex justify-center text-sm">
+                        <span className="px-2 bg-white text-gray-500 dark:bg-gray-900 dark:text-gray-400">Or continue with</span>
+                      </div>
+                    </div>
+
+                    <div className="mt-6 w-full">
+                      <LoginButton />
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
           

@@ -3,13 +3,14 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui/Button';
 
 export const LoginButton: React.FC = () => {
-  const { signInWithGoogle, error } = useAuth();
+  const { signInWithGoogle } = useAuth();
 
   const handleGoogleLogin = async () => {
     try {
       await signInWithGoogle();
     } catch (error) {
       console.error('Failed to sign in with Google:', error);
+      // Error will be handled by the parent component
     }
   };
 
@@ -39,9 +40,6 @@ export const LoginButton: React.FC = () => {
         </svg>
         Sign in with Google
       </button>
-      {error && (
-        <p className="text-sm text-red-600">{error.message}</p>
-      )}
     </div>
   );
 }; 
