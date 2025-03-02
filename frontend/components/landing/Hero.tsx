@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { Button } from '../../components/ui/Button';
 
 const Hero: React.FC = () => {
   return (
@@ -23,19 +24,25 @@ const Hero: React.FC = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link 
-              href="/auth/signin" 
-              className="btn-primary flex items-center justify-center gap-2 text-lg dark:bg-primary-600 dark:hover:bg-primary-700 dark:border-primary-800"
+            <Button
+              asChild
+              size="lg"
+              className="inline-flex items-center"
             >
-              Try it for free <ArrowRight size={18} />
-            </Link>
+              <Link href="/auth/signin" className="inline-flex items-center gap-2">
+                Try it for free <ArrowRight size={16} />
+              </Link>
+            </Button>
             
-            <Link 
-              href="/book-demo" 
-              className="btn-secondary text-lg dark:bg-primary-900/30 dark:text-primary-400 dark:hover:bg-primary-800/40"
+            <Button
+              asChild
+              variant="secondary"
+              size="lg"
             >
-              Book a demo
-            </Link>
+              <Link href="/book-demo">
+                Book a demo
+              </Link>
+            </Button>
           </div>
           
           <div className="mt-4 text-sm text-gray-500 dark:text-accent-200 flex items-center justify-center gap-6">

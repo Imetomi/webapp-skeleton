@@ -3,6 +3,7 @@ import {
   signInWithPopup, 
   GoogleAuthProvider, 
   signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   signOut as firebaseSignOut,
   onAuthStateChanged,
   User as FirebaseUser
@@ -67,6 +68,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const registerWithEmailPassword = async (email: string, password: string) => {
+    try {
+      setError(null);
+      await createUserWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('An error occurred during registration'));
+      throw err;
+    }
+  };
+
   const signOut = async () => {
     try {
       setError(null);
@@ -83,6 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     error,
     signInWithGoogle,
     signInWithEmailPassword,
+    registerWithEmailPassword,
     signOut,
   };
 

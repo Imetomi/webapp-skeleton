@@ -7,12 +7,13 @@ import { useRouter } from 'next/router';
 import { Button } from '../../components/ui/Button';
 import { ArrowLeft } from 'lucide-react';
 
-export default function SignInPage() {
-  const { user, loading, signInWithEmailPassword, error } = useAuth();
+export default function SignUpPage() {
+  const { user, loading, registerWithEmailPassword, error } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [formError, setFormError] = useState<string | null>(null);
 
   // Redirect if already logged in
   React.useEffect(() => {
@@ -23,19 +24,31 @@ export default function SignInPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError(null);
+
+    if (password !== confirmPassword) {
+      setFormError("Passwords don't match");
+      return;
+    }
+
+    if (password.length < 6) {
+      setFormError("Password must be at least 6 characters");
+      return;
+    }
+
     try {
-      await signInWithEmailPassword(email, password);
+      await registerWithEmailPassword(email, password);
       router.push('/dashboard');
     } catch (err) {
-      console.error('Sign in error:', err);
+      console.error('Registration error:', err);
     }
   };
 
   return (
     <>
       <Head>
-        <title>Sign In | WebApp</title>
-        <meta name="description" content="Sign in to your WebApp account" />
+        <title>Sign Up | WebApp</title>
+        <meta name="description" content="Create a new WebApp account" />
       </Head>
 
       <div className="min-h-screen flex flex-col">
@@ -48,7 +61,7 @@ export default function SignInPage() {
         </div>
 
         <div className="flex flex-1">
-          {/* Left side - Sign in form */}
+          {/* Left side - Sign up form */}
           <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
             <div className="max-w-md w-full space-y-8">
               <div>
@@ -56,12 +69,12 @@ export default function SignInPage() {
                   WebApp
                 </Link>
                 <h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">
-                  Sign in to your account
+                  Create a new account
                 </h2>
                 <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                   Or{' '}
-                  <Link href="/auth/signup" className="font-medium text-primary-600 hover:text-primary-500 dark:text-accent-400 dark:hover:text-accent-300">
-                    create a new account
+                  <Link href="/auth/signin" className="font-medium text-primary-600 hover:text-primary-500 dark:text-accent-400 dark:hover:text-accent-300">
+                    sign in to your existing account
                   </Link>
                 </p>
               </div>
@@ -88,47 +101,39 @@ export default function SignInPage() {
                       id="password"
                       name="password"
                       type="password"
-                      autoComplete="current-password"
+                      autoComplete="new-password"
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                      className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                       placeholder="Password"
                     />
                   </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
+                  <div>
+                    <label htmlFor="confirm-password" className="sr-only">Confirm Password</label>
                     <input
-                      id="remember-me"
-                      name="remember-me"
-                      type="checkbox"
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                      className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded dark:bg-gray-800 dark:border-gray-700"
+                      id="confirm-password"
+                      name="confirm-password"
+                      type="password"
+                      autoComplete="new-password"
+                      required
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                      placeholder="Confirm Password"
                     />
-                    <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
-                      Remember me
-                    </label>
-                  </div>
-
-                  <div className="text-sm">
-                    <Link href="#" className="font-medium text-primary-600 hover:text-primary-500 dark:text-accent-400 dark:hover:text-accent-300">
-                      Forgot your password?
-                    </Link>
                   </div>
                 </div>
 
-                {error && (
+                {(formError || error) && (
                   <div className="text-sm text-red-600">
-                    {error.message}
+                    {formError || error?.message}
                   </div>
                 )}
 
                 <div>
                   <Button type="submit" fullWidth>
-                    Sign in
+                    Sign up
                   </Button>
                 </div>
 
@@ -157,9 +162,9 @@ export default function SignInPage() {
                 <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-accent-500/20 z-10"></div>
                 <div className="absolute inset-0 flex items-center justify-center z-20">
                   <div className="text-center">
-                    <h3 className="text-2xl font-bold text-white mb-2">Secure Authentication</h3>
+                    <h3 className="text-2xl font-bold text-white mb-2">Join Our Community</h3>
                     <p className="text-white/80 max-w-xs mx-auto">
-                      Protect your application with our state-of-the-art authentication system
+                      Create an account to access all features and start your journey with us
                     </p>
                   </div>
                 </div>

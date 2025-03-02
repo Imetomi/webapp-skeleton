@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Layout from '../components/layout/Layout';
 import { Check } from 'lucide-react';
+import { Button } from '../components/ui/Button';
 
 const PricingPage: React.FC = () => {
   return (
@@ -56,12 +57,11 @@ const PricingPage: React.FC = () => {
                   </ul>
                 </div>
                 <div className="p-6">
-                  <Link 
-                    href="/auth/signin" 
-                    className="block w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-center text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:bg-primary-600 dark:hover:bg-primary-700 dark:border-primary-800"
-                  >
-                    Start free trial
-                  </Link>
+                  <Button asChild fullWidth>
+                    <Link href="/auth/signin">
+                      Start free trial
+                    </Link>
+                  </Button>
                 </div>
               </div>
 
@@ -105,12 +105,11 @@ const PricingPage: React.FC = () => {
                   </ul>
                 </div>
                 <div className="p-6">
-                  <Link 
-                    href="/auth/signin" 
-                    className="block w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-center text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:bg-primary-600 dark:hover:bg-primary-700 dark:border-primary-800"
-                  >
-                    Start free trial
-                  </Link>
+                  <Button asChild fullWidth>
+                    <Link href="/auth/signin">
+                      Start free trial
+                    </Link>
+                  </Button>
                 </div>
               </div>
 
@@ -153,12 +152,11 @@ const PricingPage: React.FC = () => {
                   </ul>
                 </div>
                 <div className="p-6">
-                  <Link 
-                    href="/book-demo" 
-                    className="block w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-center text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:bg-primary-600 dark:hover:bg-primary-700 dark:border-primary-800"
-                  >
-                    Contact sales
-                  </Link>
+                  <Button asChild fullWidth>
+                    <Link href="/book-demo">
+                      Contact sales
+                    </Link>
+                  </Button>
                 </div>
               </div>
             </div>

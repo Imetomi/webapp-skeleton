@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { Sun, Moon } from 'lucide-react';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { Button } from '../ui/Button';
 
 interface NavbarProps {
   isDarkMode: boolean;
@@ -100,12 +101,11 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
           </button>
           
           {/* Get Started Button */}
-          <Link 
-            href="/auth/signin" 
-            className="btn-primary dark:bg-primary-600 dark:hover:bg-primary-700 dark:border-primary-800"
-          >
-            Get started
-          </Link>
+          <Button asChild>
+            <Link href="/auth/signin">
+              Get started
+            </Link>
+          </Button>
         </div>
       </div>
     </header>

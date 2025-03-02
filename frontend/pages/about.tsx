@@ -2,6 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import Layout from '../components/layout/Layout';
 import Link from 'next/link';
+import { Button } from '../components/ui/Button';
 
 const AboutPage: React.FC = () => {
   return (
@@ -116,18 +117,16 @@ const AboutPage: React.FC = () => {
                 Join thousands of developers who are already using WebApp to secure their applications.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
-                <Link 
-                  href="/auth/signin" 
-                  className="btn-primary dark:bg-primary-600 dark:hover:bg-primary-700 dark:border-primary-800"
-                >
-                  Start your free trial
-                </Link>
-                <Link 
-                  href="/book-demo" 
-                  className="btn-secondary dark:bg-primary-900/30 dark:text-primary-400 dark:hover:bg-primary-800/40"
-                >
-                  Book a demo
-                </Link>
+                <Button asChild>
+                  <Link href="/auth/signin">
+                    Start your free trial
+                  </Link>
+                </Button>
+                <Button asChild variant="secondary">
+                  <Link href="/book-demo">
+                    Book a demo
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>
