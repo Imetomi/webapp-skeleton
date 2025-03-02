@@ -25,7 +25,6 @@ async function fetchAPI<T>(endpoint: string, options = {}): Promise<T> {
   try {
     // Use internal URL for server-side requests
     const url = `${INTERNAL_URL}/api/${endpoint}`;
-    console.log('Fetching from:', url); // Debug log
     const response = await fetch(url, mergedOptions);
 
     if (!response.ok) {
@@ -33,10 +32,8 @@ async function fetchAPI<T>(endpoint: string, options = {}): Promise<T> {
     }
 
     const data = await response.json();
-    console.log('API Response:', data); // Debug log
     return data;
   } catch (error) {
-    console.error('API Error:', error);
     throw error;
   }
 }
@@ -82,17 +79,14 @@ export async function getFeaturedArticles(limit = 3): Promise<ArticleListRespons
  */
 export function getStrapiImageUrl(path: string): string {
   if (!path) {
-    console.log('getStrapiImageUrl: Empty path provided');
     return '';
   }
   if (path.startsWith('http')) {
-    console.log('getStrapiImageUrl: Full URL provided:', path);
     return path;
   }
   
   // Always use the internal Docker network URL for images
   const fullUrl = `${INTERNAL_URL}${path}`;
-  console.log('getStrapiImageUrl: Generated URL:', fullUrl);
   return fullUrl;
 }
 

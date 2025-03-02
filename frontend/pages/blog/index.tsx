@@ -16,7 +16,6 @@ export default function BlogPage({ articles }: BlogPageProps) {
   const { theme, toggleTheme } = useTheme();
   const isDarkMode = theme === 'dark';
 
-  console.log('Articles data:', articles); // Debug log
 
   if (!articles?.data || articles.data.length === 0) {
     return (
@@ -66,7 +65,6 @@ export default function BlogPage({ articles }: BlogPageProps) {
         <div className="max-w-4xl mx-auto px-4 py-12">
           <div className="space-y-16">
             {articles.data.map((article) => {
-              console.log('Rendering article:', article); // Debug log
               return (
                 <article key={article.id} className="group">
                   <Link href={`/blog/${article.attributes.slug}`}>
@@ -126,9 +124,7 @@ export default function BlogPage({ articles }: BlogPageProps) {
 
 export const getStaticProps: GetStaticProps = async () => {
   try {
-    console.log('Fetching articles...'); // Debug log
     const articles = await getArticles(1, 10);
-    console.log('Fetched articles:', articles); // Debug log
     return {
       props: {
         articles,

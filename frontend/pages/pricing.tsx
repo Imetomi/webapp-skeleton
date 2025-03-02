@@ -57,7 +57,7 @@ const PricingPage: React.FC = () => {
                   </ul>
                 </div>
                 <div className="p-6">
-                  <Button asChild fullWidth>
+                  <Button asChild fullWidth variant="secondary">
                     <Link href="/auth/signin">
                       Start free trial
                     </Link>
@@ -152,7 +152,7 @@ const PricingPage: React.FC = () => {
                   </ul>
                 </div>
                 <div className="p-6">
-                  <Button asChild fullWidth>
+                  <Button asChild fullWidth variant="secondary">
                     <Link href="/book-demo">
                       Contact sales
                     </Link>

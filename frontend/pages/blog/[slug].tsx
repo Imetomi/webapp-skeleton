@@ -9,6 +9,7 @@ import { SingleArticleResponse } from '../../types/blog';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useTheme } from '../../contexts/ThemeContext';
+import { ReactMarkdownProps } from 'react-markdown';
 
 interface ArticlePageProps {
   article: SingleArticleResponse;
@@ -25,13 +26,6 @@ export default function ArticlePage({ article }: ArticlePageProps) {
   const { attributes } = article.data;
   const { seo, featuredImage } = attributes;
 
-  // Debug logging for image data
-  console.log('Featured Image Data:', featuredImage?.data?.attributes);
-  
-  // If we have a featured image, log the generated URL
-  if (featuredImage?.data?.attributes?.url) {
-    console.log('Generated Image URL:', getStrapiImageUrl(featuredImage.data.attributes.url));
-  }
 
   return (
     <>
@@ -79,7 +73,7 @@ export default function ArticlePage({ article }: ArticlePageProps) {
             className="inline-flex items-center text-sm text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
           >
             <ArrowLeft size={16} className="mr-1" />
-            Back to Blog
+            Back to blog
           </Link>
         </div>
 
@@ -129,33 +123,33 @@ export default function ArticlePage({ article }: ArticlePageProps) {
             <ReactMarkdown 
               remarkPlugins={[remarkGfm]}
               components={{
-                table: ({ node, ...props }) => (
+                table: ({ node, ...props }: ReactMarkdownProps) => (
                   <div className="my-4 overflow-x-auto">
                     <table className="w-full border-collapse text-left" {...props} />
                   </div>
                 ),
-                thead: ({ node, ...props }) => (
+                thead: ({ node, ...props }: ReactMarkdownProps) => (
                   <thead className="border-b border-gray-200 dark:border-gray-800" {...props} />
                 ),
-                tr: ({ node, ...props }) => (
+                tr: ({ node, ...props }: ReactMarkdownProps) => (
                   <tr 
                     className="border-b border-gray-100 dark:border-gray-800/50 last:border-none transition-colors hover:bg-gray-50/50 dark:hover:bg-gray-800/50" 
                     {...props} 
                   />
                 ),
-                td: ({ node, ...props }) => (
+                td: ({ node, ...props }: ReactMarkdownProps) => (
                   <td className="py-4 pr-8 text-base align-middle text-gray-700 dark:text-gray-300" {...props} />
                 ),
-                th: ({ node, ...props }) => (
+                th: ({ node, ...props }: ReactMarkdownProps) => (
                   <th className="py-4 pr-8 text-base font-medium text-gray-600 dark:text-gray-400" {...props} />
                 ),
-                a: ({ node, ...props }) => (
+                a: ({ node, ...props }: ReactMarkdownProps) => (
                   <a 
                     className="text-primary-500 hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300 no-underline" 
                     {...props}
                   />
                 ),
-                p: ({ node, children, ...props }) => {
+                p: ({ node, children, ...props }: ReactMarkdownProps) => {
                   // Check if the paragraph contains an image
                   const hasImg = children && Array.isArray(children) && children.some(
                     child => typeof child === 'object' && child && 'type' in child && child.type === 'img'
@@ -173,34 +167,34 @@ export default function ArticlePage({ article }: ArticlePageProps) {
                   // Otherwise render a normal paragraph
                   return <p className="text-gray-700 dark:text-gray-300" {...props}>{children}</p>;
                 },
-                h2: ({ node, ...props }) => (
+                h2: ({ node, ...props }: ReactMarkdownProps) => (
                   <h2 className="text-gray-900 dark:text-white" {...props} />
                 ),
-                h3: ({ node, ...props }) => (
+                h3: ({ node, ...props }: ReactMarkdownProps) => (
                   <h3 className="text-gray-900 dark:text-white" {...props} />
                 ),
-                h4: ({ node, ...props }) => (
+                h4: ({ node, ...props }: ReactMarkdownProps) => (
                   <h4 className="text-gray-900 dark:text-white" {...props} />
                 ),
-                ul: ({ node, ...props }) => (
+                ul: ({ node, ...props }: ReactMarkdownProps) => (
                   <ul className="text-gray-700 dark:text-gray-300" {...props} />
                 ),
-                ol: ({ node, ...props }) => (
+                ol: ({ node, ...props }: ReactMarkdownProps) => (
                   <ol className="text-gray-700 dark:text-gray-300" {...props} />
                 ),
-                li: ({ node, ...props }) => (
+                li: ({ node, ...props }: ReactMarkdownProps) => (
                   <li className="text-gray-700 dark:text-gray-300" {...props} />
                 ),
-                blockquote: ({ node, ...props }) => (
+                blockquote: ({ node, ...props }: ReactMarkdownProps) => (
                   <blockquote className="border-l-4 border-primary-500 dark:border-primary-400 pl-4 italic text-gray-700 dark:text-gray-300" {...props} />
                 ),
-                code: ({ node, ...props }) => (
+                code: ({ node, ...props }: ReactMarkdownProps) => (
                   <code className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded px-1 py-0.5" {...props} />
                 ),
-                pre: ({ node, ...props }) => (
+                pre: ({ node, ...props }: ReactMarkdownProps) => (
                   <pre className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded p-4 overflow-x-auto" {...props} />
                 ),
-                img: ({ node, ...props }) => (
+                img: ({ node, ...props }: ReactMarkdownProps) => (
                   <img
                     {...props}
                     className="w-full rounded-lg my-8"
@@ -279,22 +273,12 @@ export default function ArticlePage({ article }: ArticlePageProps) {
           {/* Author Bio */}
           <footer className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800">
             <div className="flex items-center">
-              {seo.structuredData.author.image && (
-                <Image
-                  src={seo.structuredData.author.image}
-                  alt={seo.structuredData.author.name}
-                  width={48}
-                  height={48}
-                  className="rounded-full"
-                />
-              )}
+              
               <div className="ml-4">
                 <h3 className="font-semibold text-gray-900 dark:text-white">
                   {seo.structuredData.author.name}
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {seo.structuredData.author.description || 'Author'}
-                </p>
+              
               </div>
             </div>
           </footer>
