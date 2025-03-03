@@ -2,34 +2,47 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import * as Tabs from '@radix-ui/react-tabs';
 import { BarChart, Users, Settings, Bell, FileText, CreditCard } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { PricingCard } from '../pricing/PricingCard';
 import { subscriptionApi } from '../../utils/api';
 import { SubscriptionPlan, SubscriptionStatus } from '../../types/subscription';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 const Dashboard: React.FC = () => {
   const { user, signOut } = useAuth();
+  const [activeTab, setActiveTab] = useState('overview');
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
-  const [currentSubscription, setCurrentSubscription] = useState<SubscriptionStatus | null>(null);
+  const [currentSubscription, setCurrentSubscription] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [plansData, subscriptionsData] = await Promise.all([
+        setLoading(true);
+        const [plansResponse, subscriptionResponse] = await Promise.all([
           subscriptionApi.getPlans(),
           subscriptionApi.getUserSubscriptions(),
         ]);
-        setPlans(plansData);
-        // Get the active subscription if any
-        const activeSubscription = subscriptionsData.find(sub => sub.status === 'active');
-        setCurrentSubscription(activeSubscription || null);
+        setPlans(plansResponse);
+        setCurrentSubscription(subscriptionResponse[0] || null);
       } catch (error) {
         console.error('Error fetching data:', error);
+        toast.error('Failed to load subscription data');
       } finally {
         setLoading(false);
       }
     };
+
+    // Check for successful Stripe checkout
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+    if (sessionId) {
+      // Clear the session_id from URL
+      window.history.replaceState({}, '', window.location.pathname);
+      toast.success('Your subscription has been activated!');
+    }
 
     fetchData();
   }, []);
@@ -50,6 +63,18 @@ const Dashboard: React.FC = () => {
 
   const handleSignOut = () => {
     signOut();
+  };
+
+  const handleSubscribe = async (planId: number) => {
+    try {
+      const response = await subscriptionApi.createCheckoutSession(planId);
+      if (response.checkout_url) {
+        window.location.href = response.checkout_url;
+      }
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+      toast.error('Failed to initiate subscription process. Please try again.');
+    }
   };
 
   return (
@@ -257,20 +282,30 @@ const Dashboard: React.FC = () => {
               </div>
             ) : (
               plans.map((plan) => (
-                <PricingCard
+                <div
                   key={plan.id}
-                  name={plan.name}
-                  price={`$${(plan.price / 100).toFixed(2)}`}
-                  description={plan.description}
-                  features={[
-                    { text: `Billed ${plan.interval}ly` },
-                    { text: 'Access to all features' },
-                    { text: '24/7 support' },
-                  ]}
-                  ctaText={currentPlan?.id === plan.id ? "Current Plan" : "Subscribe"}
-                  ctaLink={currentPlan?.id === plan.id ? "#" : `/subscribe/${plan.id}`}
-                  variant={currentPlan?.id === plan.id ? "secondary" : "default"}
-                />
+                  className="flex flex-col p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm"
+                >
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {plan.name}
+                  </h3>
+                  <p className="mt-2 text-gray-500 dark:text-gray-400">
+                    {plan.description}
+                  </p>
+                  <div className="mt-4">
+                    <span className="text-4xl font-bold text-gray-900 dark:text-white">
+                      ${(plan.price / 100).toFixed(2)}
+                    </span>
+                    <span className="text-gray-500 dark:text-gray-400">/month</span>
+                  </div>
+                  <Button
+                    className="mt-6"
+                    onClick={() => handleSubscribe(plan.id)}
+                    disabled={currentSubscription?.plan_id === plan.id}
+                  >
+                    {currentSubscription?.plan_id === plan.id ? 'Current Plan' : 'Subscribe'}
+                  </Button>
+                </div>
               ))
             )}
           </div>

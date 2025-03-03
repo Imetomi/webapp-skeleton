@@ -87,6 +87,13 @@ export const subscriptionApi = {
     console.log('User subscriptions response:', response.data);
     return response.data;
   },
+
+  createCheckoutSession: async (planId: number): Promise<{ checkout_url: string }> => {
+    console.log('Creating checkout session for plan:', planId);
+    const response = await api.post(`/payments/create-checkout-session/${planId}`);
+    console.log('Checkout session response:', response.data);
+    return response.data;
+  },
 };
 
 export default api; 

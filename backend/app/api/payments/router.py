@@ -3,6 +3,7 @@ from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
 
 from app.core.config import settings
 from app.core.dependencies import get_current_active_superuser, get_current_user, get_db
@@ -12,6 +13,7 @@ from app.core.stripe import (
     get_customer_invoices,
     get_stripe_customer,
     handle_webhook_event,
+    create_checkout_session,
 )
 from app.db.models.subscription import (
     Subscription,
@@ -26,6 +28,16 @@ from app.schemas.subscription import (
     SubscriptionPlanCreate,
     SubscriptionRequest,
 )
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+# New schema for checkout session response
+class CheckoutSessionResponse(BaseModel):
+    checkout_url: str
+
 
 router = APIRouter()
 
@@ -243,92 +255,173 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)) -> dic
     payload = await request.body()
     sig_header = request.headers.get("stripe-signature")
 
+    logger.info(f"Received webhook with signature: {sig_header[:20]}...")
+    logger.info(f"Using webhook secret: {settings.STRIPE_WEBHOOK_SECRET[:20]}...")
+
     if not sig_header:
+        logger.error("No Stripe signature found in headers")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="No Stripe signature found",
         )
 
-    event = handle_webhook_event(payload, sig_header)
+    try:
+        event = handle_webhook_event(payload, sig_header)
+        logger.info(f"Successfully verified webhook: {event.type}")
 
-    # Handle the event
-    if event.type == "customer.subscription.updated":
-        subscription_data = event.data.object
-        db_subscription = (
-            db.query(Subscription)
-            .filter(Subscription.stripe_subscription_id == subscription_data.id)
-            .first()
-        )
+        # Handle the event
+        if event.type == "customer.subscription.updated":
+            subscription_data = event.data.object
+            logger.info(f"Processing subscription update: {subscription_data.id}")
+            db_subscription = (
+                db.query(Subscription)
+                .filter(Subscription.stripe_subscription_id == subscription_data.id)
+                .first()
+            )
 
-        if db_subscription:
-            # Update subscription status
-            if subscription_data.status == "active":
-                db_subscription.status = SubscriptionStatus.ACTIVE
-            elif subscription_data.status == "past_due":
-                db_subscription.status = SubscriptionStatus.PAST_DUE
-            elif subscription_data.status == "unpaid":
-                db_subscription.status = SubscriptionStatus.UNPAID
-            elif subscription_data.status == "canceled":
+            if db_subscription:
+                # Update subscription status
+                if subscription_data.status == "active":
+                    db_subscription.status = SubscriptionStatus.ACTIVE
+                elif subscription_data.status == "past_due":
+                    db_subscription.status = SubscriptionStatus.PAST_DUE
+                elif subscription_data.status == "unpaid":
+                    db_subscription.status = SubscriptionStatus.UNPAID
+                elif subscription_data.status == "canceled":
+                    db_subscription.status = SubscriptionStatus.CANCELED
+
+                # Update period dates
+                db_subscription.current_period_start = datetime.fromtimestamp(
+                    subscription_data.current_period_start
+                )
+                db_subscription.current_period_end = datetime.fromtimestamp(
+                    subscription_data.current_period_end
+                )
+                db_subscription.cancel_at_period_end = (
+                    subscription_data.cancel_at_period_end
+                )
+
+                db.add(db_subscription)
+                db.commit()
+
+        elif event.type == "customer.subscription.deleted":
+            subscription_data = event.data.object
+            db_subscription = (
+                db.query(Subscription)
+                .filter(Subscription.stripe_subscription_id == subscription_data.id)
+                .first()
+            )
+
+            if db_subscription:
                 db_subscription.status = SubscriptionStatus.CANCELED
+                db_subscription.cancel_at_period_end = True
+                db.add(db_subscription)
+                db.commit()
 
-            # Update period dates
-            db_subscription.current_period_start = datetime.fromtimestamp(
-                subscription_data.current_period_start
-            )
-            db_subscription.current_period_end = datetime.fromtimestamp(
-                subscription_data.current_period_end
-            )
-            db_subscription.cancel_at_period_end = (
-                subscription_data.cancel_at_period_end
-            )
+        elif event.type == "invoice.payment_succeeded":
+            invoice_data = event.data.object
+            if invoice_data.subscription:
+                db_subscription = (
+                    db.query(Subscription)
+                    .filter(
+                        Subscription.stripe_subscription_id == invoice_data.subscription
+                    )
+                    .first()
+                )
 
-            db.add(db_subscription)
-            db.commit()
+                if db_subscription:
+                    db_subscription.status = SubscriptionStatus.ACTIVE
+                    db.add(db_subscription)
+                    db.commit()
 
-    elif event.type == "customer.subscription.deleted":
-        subscription_data = event.data.object
-        db_subscription = (
-            db.query(Subscription)
-            .filter(Subscription.stripe_subscription_id == subscription_data.id)
-            .first()
+        elif event.type == "invoice.payment_failed":
+            invoice_data = event.data.object
+            if invoice_data.subscription:
+                db_subscription = (
+                    db.query(Subscription)
+                    .filter(
+                        Subscription.stripe_subscription_id == invoice_data.subscription
+                    )
+                    .first()
+                )
+
+                if db_subscription:
+                    db_subscription.status = SubscriptionStatus.PAST_DUE
+                    db.add(db_subscription)
+                    db.commit()
+
+        return {"status": "success"}
+
+    except Exception as e:
+        logger.error(f"Error processing webhook: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error processing webhook",
         )
 
-        if db_subscription:
-            db_subscription.status = SubscriptionStatus.CANCELED
-            db_subscription.cancel_at_period_end = True
-            db.add(db_subscription)
-            db.commit()
 
-    elif event.type == "invoice.payment_succeeded":
-        invoice_data = event.data.object
-        if invoice_data.subscription:
-            db_subscription = (
-                db.query(Subscription)
-                .filter(
-                    Subscription.stripe_subscription_id == invoice_data.subscription
-                )
-                .first()
-            )
+@router.post(
+    "/create-checkout-session/{plan_id}", response_model=CheckoutSessionResponse
+)
+async def create_subscription_checkout(
+    plan_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """
+    Create a Stripe Checkout session for subscription purchase.
+    """
+    # Get the subscription plan
+    plan = (
+        db.query(SubscriptionPlan)
+        .filter(
+            SubscriptionPlan.id == plan_id,
+            SubscriptionPlan.is_active == True,
+        )
+        .first()
+    )
 
-            if db_subscription:
-                db_subscription.status = SubscriptionStatus.ACTIVE
-                db.add(db_subscription)
-                db.commit()
+    if not plan:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Subscription plan not found",
+        )
 
-    elif event.type == "invoice.payment_failed":
-        invoice_data = event.data.object
-        if invoice_data.subscription:
-            db_subscription = (
-                db.query(Subscription)
-                .filter(
-                    Subscription.stripe_subscription_id == invoice_data.subscription
-                )
-                .first()
-            )
+    if not plan.stripe_price_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid subscription plan configuration",
+        )
 
-            if db_subscription:
-                db_subscription.status = SubscriptionStatus.PAST_DUE
-                db.add(db_subscription)
-                db.commit()
+    # Check if user already has an active subscription for this plan
+    existing_subscription = (
+        db.query(Subscription)
+        .filter(
+            Subscription.user_id == current_user.id,
+            Subscription.plan_id == plan.id,
+            Subscription.status == SubscriptionStatus.ACTIVE,
+        )
+        .first()
+    )
 
-    return {"status": "success"}
+    if existing_subscription:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User already has an active subscription for this plan",
+        )
+
+    # Create or get Stripe customer
+    stripe_customer = get_stripe_customer(
+        email=current_user.email,
+        name=current_user.full_name,
+    )
+
+    # Create Stripe Checkout session
+    session = create_checkout_session(
+        customer_id=stripe_customer.id,
+        price_id=plan.stripe_price_id,
+        success_url=f"{settings.FRONTEND_URL}/dashboard?session_id={{CHECKOUT_SESSION_ID}}",
+        cancel_url=f"{settings.FRONTEND_URL}/dashboard",
+    )
+
+    return {"checkout_url": session.url}
