@@ -4,6 +4,8 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
+import stripe
+import logging
 
 from app.core.config import settings
 from app.core.dependencies import get_current_active_superuser, get_current_user, get_db
@@ -28,8 +30,6 @@ from app.schemas.subscription import (
     SubscriptionPlanCreate,
     SubscriptionRequest,
 )
-
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -272,37 +272,108 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)) -> dic
         # Handle the event
         if event.type == "customer.subscription.updated":
             subscription_data = event.data.object
-            logger.info(f"Processing subscription update: {subscription_data.id}")
+            logger.info(f"Processing subscription update: {subscription_data['id']}")
             db_subscription = (
                 db.query(Subscription)
-                .filter(Subscription.stripe_subscription_id == subscription_data.id)
+                .filter(Subscription.stripe_subscription_id == subscription_data["id"])
                 .first()
             )
 
             if db_subscription:
                 # Update subscription status
-                if subscription_data.status == "active":
+                if subscription_data["status"] == "active":
                     db_subscription.status = SubscriptionStatus.ACTIVE
-                elif subscription_data.status == "past_due":
+                elif subscription_data["status"] == "past_due":
                     db_subscription.status = SubscriptionStatus.PAST_DUE
-                elif subscription_data.status == "unpaid":
+                elif subscription_data["status"] == "unpaid":
                     db_subscription.status = SubscriptionStatus.UNPAID
-                elif subscription_data.status == "canceled":
+                elif subscription_data["status"] == "canceled":
                     db_subscription.status = SubscriptionStatus.CANCELED
 
                 # Update period dates
                 db_subscription.current_period_start = datetime.fromtimestamp(
-                    subscription_data.current_period_start
+                    subscription_data["current_period_start"]
                 )
                 db_subscription.current_period_end = datetime.fromtimestamp(
-                    subscription_data.current_period_end
+                    subscription_data["current_period_end"]
                 )
-                db_subscription.cancel_at_period_end = (
-                    subscription_data.cancel_at_period_end
-                )
+                db_subscription.cancel_at_period_end = subscription_data[
+                    "cancel_at_period_end"
+                ]
 
                 db.add(db_subscription)
                 db.commit()
+                logger.info(
+                    f"Updated subscription {db_subscription.id} with status {db_subscription.status}"
+                )
+
+        elif event.type == "customer.subscription.created":
+            try:
+                subscription_data = event.data.object
+                logger.info(f"Processing new subscription: {subscription_data.id}")
+                logger.info(f"Raw subscription data: {subscription_data}")
+
+                # Get the customer email from the subscription data
+                customer = stripe.Customer.retrieve(subscription_data.customer)
+                logger.info(f"Retrieved customer: {customer.email}")
+
+                # Find the user by email
+                user = db.query(User).filter(User.email == customer.email).first()
+                if not user:
+                    logger.error(f"User not found for email: {customer.email}")
+                    return {"status": "error", "message": "User not found"}
+
+                # Get the price ID from the subscription items
+                subscription_items = subscription_data.get("items", {})
+                if not subscription_items or not subscription_items.get("data"):
+                    logger.error("No subscription items found")
+                    return {"status": "error", "message": "No subscription items found"}
+
+                price_id = subscription_items["data"][0]["price"]["id"]
+                logger.info(f"Retrieved price ID from subscription: {price_id}")
+
+                # Find the plan by Stripe Price ID
+                plan = (
+                    db.query(SubscriptionPlan)
+                    .filter(SubscriptionPlan.stripe_price_id == price_id)
+                    .first()
+                )
+                if not plan:
+                    logger.error(f"Plan not found for price_id: {price_id}")
+                    return {"status": "error", "message": "Plan not found"}
+
+                # Create new subscription in database
+                new_subscription = Subscription(
+                    user_id=user.id,
+                    plan_id=plan.id,
+                    status=(
+                        SubscriptionStatus.ACTIVE
+                        if subscription_data.status == "active"
+                        else SubscriptionStatus.UNPAID
+                    ),
+                    stripe_subscription_id=subscription_data.id,
+                    current_period_start=datetime.fromtimestamp(
+                        subscription_data.current_period_start
+                    ),
+                    current_period_end=datetime.fromtimestamp(
+                        subscription_data.current_period_end
+                    ),
+                    cancel_at_period_end=subscription_data.cancel_at_period_end,
+                )
+
+                db.add(new_subscription)
+                db.commit()
+                logger.info(f"Created new subscription in database for user {user.id}")
+                return {"status": "success"}
+
+            except Exception as e:
+                logger.error(f"Error in subscription.created webhook: {str(e)}")
+                logger.exception("Full traceback:")
+                db.rollback()
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=f"Error processing subscription creation: {str(e)}",
+                )
 
         elif event.type == "customer.subscription.deleted":
             subscription_data = event.data.object

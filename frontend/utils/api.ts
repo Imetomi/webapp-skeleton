@@ -94,6 +94,13 @@ export const subscriptionApi = {
     console.log('Checkout session response:', response.data);
     return response.data;
   },
+
+  cancelSubscription: async (subscriptionId: number): Promise<SubscriptionStatus> => {
+    console.log('Canceling subscription:', subscriptionId);
+    const response = await api.post(`/payments/cancel?subscription_id=${subscriptionId}`);
+    console.log('Cancel subscription response:', response.data);
+    return response.data;
+  },
 };
 
 export default api; 

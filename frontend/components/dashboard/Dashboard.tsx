@@ -77,6 +77,19 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const handleCancel = async (subscriptionId: number) => {
+    try {
+      await subscriptionApi.cancelSubscription(subscriptionId);
+      toast.success('Your subscription has been canceled. You will have access until the end of your billing period.');
+      // Refresh subscription data
+      const subscriptionResponse = await subscriptionApi.getUserSubscriptions();
+      setCurrentSubscription(subscriptionResponse[0] || null);
+    } catch (error) {
+      console.error('Error canceling subscription:', error);
+      toast.error('Failed to cancel subscription. Please try again.');
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Welcome Header */}
@@ -246,16 +259,28 @@ const Dashboard: React.FC = () => {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Status</p>
-                  <p className="text-base font-medium text-gray-900 dark:text-white">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-400">
-                      Active
-                    </span>
-                    {currentSubscription.cancel_at_period_end && (
-                      <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
-                        (Cancels at period end)
+                  <div className="flex items-center justify-between">
+                    <p className="text-base font-medium text-gray-900 dark:text-white">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-400">
+                        Active
                       </span>
+                      {currentSubscription.cancel_at_period_end && (
+                        <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                          (Cancels at period end)
+                        </span>
+                      )}
+                    </p>
+                    {!currentSubscription.cancel_at_period_end && (
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleCancel(currentSubscription.id)}
+                        className="ml-4"
+                      >
+                        Cancel
+                      </Button>
                     )}
-                  </p>
+                  </div>
                 </div>
               </div>
             ) : (
