@@ -261,8 +261,12 @@ const Dashboard: React.FC = () => {
                   <p className="text-sm text-gray-500 dark:text-gray-400">Status</p>
                   <div className="flex items-center justify-between">
                     <p className="text-base font-medium text-gray-900 dark:text-white">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-400">
-                        Active
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        currentSubscription.status === 'active' 
+                          ? 'bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-400'
+                          : 'bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-400'
+                      }`}>
+                        {currentSubscription.status === 'active' ? 'Active' : 'Canceled'}
                       </span>
                       {currentSubscription.cancel_at_period_end && (
                         <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
@@ -270,7 +274,7 @@ const Dashboard: React.FC = () => {
                         </span>
                       )}
                     </p>
-                    {!currentSubscription.cancel_at_period_end && (
+                    {!currentSubscription.cancel_at_period_end && currentSubscription.status === 'active' && (
                       <Button
                         variant="destructive"
                         size="sm"
@@ -326,9 +330,14 @@ const Dashboard: React.FC = () => {
                   <Button
                     className="mt-6"
                     onClick={() => handleSubscribe(plan.id)}
-                    disabled={currentSubscription?.plan_id === plan.id}
+                    disabled={currentSubscription?.plan_id === plan.id && currentSubscription?.status === 'active'}
                   >
-                    {currentSubscription?.plan_id === plan.id ? 'Current Plan' : 'Subscribe'}
+                    {currentSubscription?.plan_id === plan.id 
+                      ? currentSubscription.status === 'active'
+                        ? 'Current Plan'
+                        : 'Reactivate'
+                      : 'Subscribe'
+                    }
                   </Button>
                 </div>
               ))

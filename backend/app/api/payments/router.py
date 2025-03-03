@@ -90,12 +90,34 @@ def get_user_subscriptions(
     current_user: User = Depends(get_current_user),
 ) -> Any:
     """
-    Retrieve current user's subscriptions.
+    Retrieve current user's most relevant subscription (active or latest canceled).
     """
-    subscriptions = (
-        db.query(Subscription).filter(Subscription.user_id == current_user.id).all()
+    # First try to find an active subscription
+    active_subscription = (
+        db.query(Subscription)
+        .filter(
+            Subscription.user_id == current_user.id,
+            Subscription.status == SubscriptionStatus.ACTIVE,
+        )
+        .order_by(Subscription.created_at.desc())
+        .first()
     )
-    return subscriptions
+
+    if active_subscription:
+        return [active_subscription]
+
+    # If no active subscription, get the most recent canceled one
+    latest_canceled = (
+        db.query(Subscription)
+        .filter(
+            Subscription.user_id == current_user.id,
+            Subscription.status == SubscriptionStatus.CANCELED,
+        )
+        .order_by(Subscription.updated_at.desc())
+        .first()
+    )
+
+    return [latest_canceled] if latest_canceled else []
 
 
 @router.post("/subscribe", response_model=SubscriptionSchema)
@@ -322,6 +344,31 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)) -> dic
                 if not user:
                     logger.error(f"User not found for email: {customer.email}")
                     return {"status": "error", "message": "User not found"}
+
+                # Cancel any existing active subscriptions
+                existing_active_subs = (
+                    db.query(Subscription)
+                    .filter(
+                        Subscription.user_id == user.id,
+                        Subscription.status == SubscriptionStatus.ACTIVE,
+                    )
+                    .all()
+                )
+
+                for existing_sub in existing_active_subs:
+                    if existing_sub.stripe_subscription_id:
+                        try:
+                            # Cancel in Stripe
+                            cancel_subscription(existing_sub.stripe_subscription_id)
+                        except Exception as e:
+                            logger.error(
+                                f"Error canceling Stripe subscription: {str(e)}"
+                            )
+
+                    # Update in database
+                    existing_sub.status = SubscriptionStatus.CANCELED
+                    existing_sub.cancel_at_period_end = True
+                    db.add(existing_sub)
 
                 # Get the price ID from the subscription items
                 subscription_items = subscription_data.get("items", {})
