@@ -1,11 +1,52 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import * as Tabs from '@radix-ui/react-tabs';
-import { BarChart, Users, Settings, Bell, FileText } from 'lucide-react';
+import { BarChart, Users, Settings, Bell, FileText, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { PricingCard } from '../pricing/PricingCard';
+import { subscriptionApi } from '../../utils/api';
+import { SubscriptionPlan, SubscriptionStatus } from '../../types/subscription';
 
 const Dashboard: React.FC = () => {
   const { user, signOut } = useAuth();
+  const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
+  const [currentSubscription, setCurrentSubscription] = useState<SubscriptionStatus | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [plansData, subscriptionsData] = await Promise.all([
+          subscriptionApi.getPlans(),
+          subscriptionApi.getUserSubscriptions(),
+        ]);
+        setPlans(plansData);
+        // Get the active subscription if any
+        const activeSubscription = subscriptionsData.find(sub => sub.status === 'active');
+        setCurrentSubscription(activeSubscription || null);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Find the current plan details
+  const currentPlan = currentSubscription 
+    ? plans.find(plan => plan.id === currentSubscription.plan_id)
+    : null;
+
+  // Format date to readable string
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
 
   const handleSignOut = () => {
     signOut();
@@ -40,6 +81,16 @@ const Dashboard: React.FC = () => {
             <div className="flex items-center gap-2">
               <BarChart size={16} />
               <span>Overview</span>
+            </div>
+          </Tabs.Trigger>
+          
+          <Tabs.Trigger
+            value="plans"
+            className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 border-b-2 border-transparent data-[state=active]:border-primary-600 data-[state=active]:text-primary-600 dark:data-[state=active]:border-primary-400 dark:data-[state=active]:text-primary-400"
+          >
+            <div className="flex items-center gap-2">
+              <CreditCard size={16} />
+              <span>Plans</span>
             </div>
           </Tabs.Trigger>
           
@@ -138,6 +189,90 @@ const Dashboard: React.FC = () => {
                 ))}
               </div>
             </div>
+          </div>
+        </Tabs.Content>
+
+        {/* Plans Tab Content */}
+        <Tabs.Content value="plans" className="outline-none">
+          {/* Current Subscription Status */}
+          <div className="mb-8 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+              Current Subscription
+            </h3>
+            {currentSubscription && currentPlan ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Plan</p>
+                  <p className="text-base font-medium text-gray-900 dark:text-white">
+                    {currentPlan.name}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Price</p>
+                  <p className="text-base font-medium text-gray-900 dark:text-white">
+                    ${(currentPlan.price / 100).toFixed(2)}/{currentPlan.interval}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Current Period</p>
+                  <p className="text-base font-medium text-gray-900 dark:text-white">
+                    {formatDate(currentSubscription.current_period_start)} - {formatDate(currentSubscription.current_period_end)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Status</p>
+                  <p className="text-base font-medium text-gray-900 dark:text-white">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-400">
+                      Active
+                    </span>
+                    {currentSubscription.cancel_at_period_end && (
+                      <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                        (Cancels at period end)
+                      </span>
+                    )}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-6">
+                <p className="text-gray-500 dark:text-gray-400 mb-4">
+                  You don't have an active subscription yet.
+                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  Choose a plan below to get started with our premium features.
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Available Plans */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {loading ? (
+              <div className="col-span-3 text-center py-8">
+                Loading plans...
+              </div>
+            ) : plans.length === 0 ? (
+              <div className="col-span-3 text-center py-8">
+                No subscription plans available.
+              </div>
+            ) : (
+              plans.map((plan) => (
+                <PricingCard
+                  key={plan.id}
+                  name={plan.name}
+                  price={`$${(plan.price / 100).toFixed(2)}`}
+                  description={plan.description}
+                  features={[
+                    { text: `Billed ${plan.interval}ly` },
+                    { text: 'Access to all features' },
+                    { text: '24/7 support' },
+                  ]}
+                  ctaText={currentPlan?.id === plan.id ? "Current Plan" : "Subscribe"}
+                  ctaLink={currentPlan?.id === plan.id ? "#" : `/subscribe/${plan.id}`}
+                  variant={currentPlan?.id === plan.id ? "secondary" : "default"}
+                />
+              ))
+            )}
           </div>
         </Tabs.Content>
 

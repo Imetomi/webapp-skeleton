@@ -35,14 +35,23 @@ def get_db() -> Generator:
 
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
-) -> dict:
+    db: Session = Depends(get_db),
+) -> User:
     """
-    Dependency to get the current user from Firebase token
+    Dependency to get the current user from Firebase token and database
     """
     try:
         token = credentials.credentials
         user_info = verify_firebase_token(token)
-        return user_info
+
+        # Get user from database using Firebase UID
+        user = db.query(User).filter(User.firebase_uid == user_info["uid"]).first()
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found in database",
+            )
+        return user
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
