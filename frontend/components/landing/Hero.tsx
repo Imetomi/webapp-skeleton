@@ -43,7 +43,7 @@ const Hero: React.FC = () => {
               href="/auth/signin" 
               prefetch
               scroll={false}
-              className="inline-flex items-center gap-2 w-full justify-center"
+              className="inline-flex items-center gap-2"
               onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                 e.preventDefault();
                 router.push('/auth/signin');
@@ -62,7 +62,6 @@ const Hero: React.FC = () => {
               href="/book-demo" 
               prefetch
               scroll={false}
-              className="w-full justify-center"
               onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                 e.preventDefault();
                 router.push('/book-demo');
