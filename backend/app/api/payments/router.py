@@ -277,9 +277,6 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)) -> dic
     payload = await request.body()
     sig_header = request.headers.get("stripe-signature")
 
-    logger.info(f"Received webhook with signature: {sig_header[:20]}...")
-    logger.info(f"Using webhook secret: {settings.STRIPE_WEBHOOK_SECRET[:20]}...")
-
     if not sig_header:
         logger.error("No Stripe signature found in headers")
         raise HTTPException(
@@ -333,7 +330,6 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)) -> dic
             try:
                 subscription_data = event.data.object
                 logger.info(f"Processing new subscription: {subscription_data.id}")
-                logger.info(f"Raw subscription data: {subscription_data}")
 
                 # Get the customer email from the subscription data
                 customer = stripe.Customer.retrieve(subscription_data.customer)
