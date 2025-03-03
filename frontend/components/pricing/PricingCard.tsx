@@ -73,7 +73,7 @@ export const PricingCard: React.FC<PricingCardProps> = ({
         <Button
           asChild
           fullWidth
-          variant={variant === 'default' ? 'secondary' : 'default'}
+          variant={popular ? 'primary' : 'secondary'}
         >
           <Link href={ctaLink}>
             {ctaText}

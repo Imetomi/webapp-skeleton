@@ -17,7 +17,7 @@ const pricingPlans = [
       { text: 'Email support' },
     ],
     ctaText: 'Start free trial',
-    ctaLink: '/auth/signin',
+    ctaLink: '/auth/signin'
   },
   {
     name: 'Pro',
@@ -32,7 +32,7 @@ const pricingPlans = [
     ],
     popular: true,
     ctaText: 'Start free trial',
-    ctaLink: '/auth/signin',
+    ctaLink: '/auth/signin'
   },
   {
     name: 'Enterprise',
@@ -47,7 +47,7 @@ const pricingPlans = [
       { text: 'Dedicated account manager' },
     ],
     ctaText: 'Contact sales',
-    ctaLink: '/book-demo',
+    ctaLink: '/book-demo'
   },
 ];
 
