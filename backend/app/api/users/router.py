@@ -8,6 +8,8 @@ from app.core.security import get_password_hash
 from app.db.models.user import User
 from app.schemas.user import User as UserSchema
 from app.schemas.user import UserCreate, UserUpdate
+from app.db.models.subscription import Subscription, SubscriptionStatus
+from app.core.firebase_admin import delete_firebase_user
 
 router = APIRouter()
 
@@ -53,6 +55,46 @@ def create_user(
     db.commit()
     db.refresh(user)
     return user
+
+
+@router.delete("/me", response_model=UserSchema)
+def delete_current_user(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """
+    Delete current user's own account.
+    Checks if user has no active subscriptions before deletion.
+    """
+    # Check for active subscriptions
+    active_subscription = (
+        db.query(Subscription)
+        .filter(
+            Subscription.user_id == current_user.id,
+            Subscription.status == SubscriptionStatus.ACTIVE,
+        )
+        .first()
+    )
+
+    if active_subscription:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot delete account with active subscription",
+        )
+
+    # Delete from Firebase first
+    try:
+        delete_firebase_user(current_user.firebase_uid)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
+
+    # Then delete from database
+    db.delete(current_user)
+    db.commit()
+    return current_user
 
 
 @router.get("/{user_id}", response_model=UserSchema)

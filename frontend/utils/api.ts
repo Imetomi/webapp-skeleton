@@ -1,6 +1,6 @@
-import axios, { AxiosError, AxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { auth } from './firebase';
-import { SubscriptionPlan, SubscriptionStatus } from '../types/subscription';
+import { SubscriptionPlan, Subscription } from '../types/subscription';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
 
@@ -34,7 +34,7 @@ api.interceptors.request.use(async (config: AxiosRequestConfig) => {
 
 // Response interceptor
 api.interceptors.response.use(
-  (response) => {
+  (response: AxiosResponse) => {
     return response;
   },
   (error: AxiosError) => {
@@ -49,7 +49,7 @@ export const subscriptionApi = {
     return response.data;
   },
   
-  getUserSubscriptions: async (): Promise<SubscriptionStatus[]> => {
+  getUserSubscriptions: async (): Promise<Subscription[]> => {
     const response = await api.get('/payments/subscriptions');
     return response.data;
   },
@@ -59,9 +59,16 @@ export const subscriptionApi = {
     return response.data;
   },
 
-  cancelSubscription: async (subscriptionId: number): Promise<SubscriptionStatus> => {
+  cancelSubscription: async (subscriptionId: number): Promise<Subscription> => {
     const response = await api.post(`/payments/cancel?subscription_id=${subscriptionId}`);
     return response.data;
+  },
+};
+
+// User related API calls
+export const userApi = {
+  deleteAccount: async (): Promise<void> => {
+    await api.delete('/users/me');
   },
 };
 
