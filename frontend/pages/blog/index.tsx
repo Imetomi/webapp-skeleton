@@ -142,7 +142,7 @@ export const getStaticProps: GetStaticProps = async () => {
       revalidate: 60, // Revalidate every minute
     };
   } catch (error) {
-    console.error('Error fetching articles:', error);
+    setError('Failed to fetch articles');
     return {
       props: {
         articles: { data: [], meta: { pagination: { page: 1, pageSize: 10, pageCount: 0, total: 0 } } },

@@ -29,8 +29,8 @@ const Dashboard: React.FC = () => {
         setPlans(plansResponse);
         setCurrentSubscription(subscriptionResponse[0] || null);
       } catch (error) {
-        console.error('Error fetching data:', error);
-        toast.error('Failed to load subscription data');
+        setError('Failed to fetch dashboard data');
+        setIsLoading(false);
       } finally {
         setLoading(false);
       }
@@ -73,8 +73,8 @@ const Dashboard: React.FC = () => {
         window.location.href = response.checkout_url;
       }
     } catch (error) {
-      console.error('Error creating checkout session:', error);
-      toast.error('Failed to initiate subscription process. Please try again.');
+      setError('Failed to create checkout session');
+      setIsLoading(false);
     }
   };
 
@@ -86,8 +86,8 @@ const Dashboard: React.FC = () => {
       const subscriptionResponse = await subscriptionApi.getUserSubscriptions();
       setCurrentSubscription(subscriptionResponse[0] || null);
     } catch (error) {
-      console.error('Error canceling subscription:', error);
-      toast.error('Failed to cancel subscription. Please try again.');
+      setError('Failed to cancel subscription');
+      setIsLoading(false);
     }
   };
 

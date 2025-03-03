@@ -22,7 +22,6 @@ const SubscriptionsPage: React.FC = () => {
         setPlans(plansResponse);
         setCurrentSubscription(subscriptionResponse[0] || null);
       } catch (error) {
-        console.error('Error fetching data:', error);
         toast.error('Failed to load subscription data');
       } finally {
         setLoading(false);
@@ -62,7 +61,6 @@ const SubscriptionsPage: React.FC = () => {
         window.location.href = response.checkout_url;
       }
     } catch (error) {
-      console.error('Error creating checkout session:', error);
       toast.error('Failed to initiate subscription process. Please try again.');
     }
   };
@@ -75,7 +73,6 @@ const SubscriptionsPage: React.FC = () => {
       const subscriptionResponse = await subscriptionApi.getUserSubscriptions();
       setCurrentSubscription(subscriptionResponse[0] || null);
     } catch (error) {
-      console.error('Error canceling subscription:', error);
       toast.error('Failed to cancel subscription. Please try again.');
     }
   };

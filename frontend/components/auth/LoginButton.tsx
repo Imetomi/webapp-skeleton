@@ -9,8 +9,8 @@ export const LoginButton: React.FC = () => {
     try {
       await signInWithGoogle();
     } catch (error) {
-      console.error('Failed to sign in with Google:', error);
-      // Error will be handled by the parent component
+      setError('Failed to sign in with Google');
+      setIsLoading(false);
     }
   };
 

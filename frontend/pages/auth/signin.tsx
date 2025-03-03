@@ -15,6 +15,8 @@ export default function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   // Redirect if already logged in
   React.useEffect(() => {
@@ -26,11 +28,12 @@ export default function SignInPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       await signInWithEmailPassword(email, password);
       router.push('/dashboard');
     } catch (err) {
-      console.error('Sign in error:', err);
-      // Error will be handled by the AuthContext
+      setError('An error occurred during sign in');
+      setIsLoading(false);
     }
   };
 

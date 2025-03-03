@@ -17,6 +17,7 @@ export default function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Redirect if already logged in
   React.useEffect(() => {
@@ -42,14 +43,17 @@ export default function SignUpPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
+    setIsLoading(true);
 
     if (password !== confirmPassword) {
       setFormError("Passwords don't match");
+      setIsLoading(false);
       return;
     }
 
     if (password.length < 6) {
       setFormError("Password must be at least 6 characters");
+      setIsLoading(false);
       return;
     }
 
@@ -57,8 +61,8 @@ export default function SignUpPage() {
       await registerWithEmailPassword(email, password, fullName);
       router.push('/dashboard');
     } catch (err) {
-      console.error('Registration error:', err);
-      // Error will be handled by the AuthContext
+      setFormError('An error occurred during registration');
+      setIsLoading(false);
     }
   };
 
