@@ -100,12 +100,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       
-      // Get the ID token
+      // Get the Firebase ID token
       const idToken = await getIdToken(result.user);
       
       // Send the token to the backend
-      await axios.post(`${API_URL}/auth/google`, { id_token: idToken });
+      const response = await axios.post(`${API_URL}/auth/google`, { id_token: idToken });
       
+      // Log both tokens but highlight the Firebase ID token which is needed for Swagger
+      console.log('\n=== Firebase ID Token (Use this for Swagger UI) ===');
+      console.log(`Bearer ${idToken}`);
+      console.log('===============================================\n');
+      
+      return response.data;
     } catch (err) {
       setError(err instanceof Error ? err : new Error('An error occurred during Google sign-in'));
       throw err;
@@ -116,12 +122,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setError(null);
       
+      // First authenticate with Firebase to get the ID token
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const idToken = await getIdToken(userCredential.user);
+      
       // Call the backend API for email/password login
       const response = await axios.post(`${API_URL}/auth/login/email`, { email, password });
       
-      // After successful backend authentication, also authenticate with Firebase
-      // This ensures Firebase state is in sync with our backend
-      await signInWithEmailAndPassword(auth, email, password);
+      // Log both tokens but highlight the Firebase ID token which is needed for Swagger
+      console.log('\n=== Firebase ID Token (Use this for Swagger UI) ===');
+      console.log(`Bearer ${idToken}`);
+      console.log('===============================================\n');
       
       return response.data;
     } catch (err) {
@@ -141,9 +152,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         full_name: fullName || "" // Use the provided fullName or empty string
       });
       
-      // After successful backend registration, also authenticate with Firebase
-      // This ensures Firebase state is in sync with our backend
-      await signInWithEmailAndPassword(auth, email, password);
+      // After successful registration, authenticate with Firebase to get the ID token
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const idToken = await getIdToken(userCredential.user);
+      
+      // Log both tokens but highlight the Firebase ID token which is needed for Swagger
+      console.log('\n=== Firebase ID Token (Use this for Swagger UI) ===');
+      console.log(`Bearer ${idToken}`);
+      console.log('===============================================\n');
       
       return response.data;
     } catch (err) {

@@ -15,8 +15,8 @@ export default function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [setError] = useState('');
+  const [setIsLoading] = useState(false);
 
   // Redirect if already logged in
   React.useEffect(() => {
