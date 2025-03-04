@@ -28,3 +28,7 @@ class User(Base):
     subscriptions = relationship(
         "Subscription", back_populates="user", cascade="all, delete-orphan"
     )
+    owned_projects = relationship(
+        "Project", back_populates="owner", foreign_keys="Project.owner_id"
+    )
+    # member_projects relationship is defined via backref in Project model

@@ -6,6 +6,7 @@ from app.api.auth.router import router as auth_router
 from app.api.users.router import router as users_router
 from app.api.payments.router import router as payments_router
 from app.api.blog.router import router as blog_router
+from app.api.projects.router import router as projects_router
 from app.core.firebase_admin import initialize_firebase_admin
 
 # Initialize Firebase Admin SDK
@@ -46,6 +47,9 @@ app.include_router(
     payments_router, prefix=f"{settings.API_V1_STR}/payments", tags=["payments"]
 )
 app.include_router(blog_router, prefix=f"{settings.API_V1_STR}/blog", tags=["blog"])
+app.include_router(
+    projects_router, prefix=f"{settings.API_V1_STR}/projects", tags=["projects"]
+)
 
 if __name__ == "__main__":
     import uvicorn
